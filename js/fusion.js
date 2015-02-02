@@ -32,6 +32,21 @@ $(function(){
 	setCheckBox();
 });
 
+
+var testData = {
+	"links": [
+		{"source": "0", "target": "1", "attached": "a"},
+		{"source": "0", "target": "0", "attached": "b"},
+		{"source": "1", "target": "0", "attached": "b"},
+		{"source": "1", "target": "1", "attached": "a"}
+	],
+	"states": ["0", "1"],
+	"startState": ["0"],
+	"finishState": ["1"],
+	"symbols": ["a", "b"],
+	"isDFA": true
+};
+
 //*----------------------------------------------------------------
 //* DOMの値取得、編集系
 //*----------------------------------------------------------------
@@ -54,7 +69,7 @@ toHideFileInput2()
 */
 function toHideFileInput2(){
 	var radio = getFusionRadio();
-	if (radio < 3) {// DOMを隠す
+	if (radio < 4) {// DOMを隠す
 		$("#file2").hide(100);
 	} else{
 		$("#file2").show(100);
@@ -151,6 +166,42 @@ function setCheckBox(){
 	}
 }
 
+/**
+getProcessStr()
+	num: 処理番号
+	numから処理名の文字列を返す
+*/
+function getProcessStr(num){
+	var result;
+	switch(num){
+		case 0:
+			result = "NFA->DFA";
+			break;
+		case 1:
+			result = "最小化";
+			break;
+		case 2:
+			result = "補集合";
+			break;
+		case 3:
+			result = "閉包";
+			break;
+		case 4:
+			result = "和集合";
+			break;
+		case 5:
+			result = "差集合";
+			break;
+		case 6:
+			result = "積集合";
+			break;
+		case 7:
+			result = "連接";
+			break;
+	}
+	return result;
+}
+
 //*----------------------------------------------------------------
 //* ファイル読み込み
 //*----------------------------------------------------------------
@@ -186,7 +237,7 @@ function fusionRequest(){
 						// Ajax通信開始
 						$.ajax({
 							type:"get",
-							url:"FusionRequest/Fusion",
+							url:"/FusionRequest/Fusion",
 							data:request,
 							contentType: 'application/json',
 							dataType: "json",
@@ -206,7 +257,7 @@ function fusionRequest(){
 								graphData["srcData2"] = null;
 								graphData["DFA"] = response["responseData"]["dfa"];
 								graphData["NFA"] = response["responseData"]["nfa"];
-								graphData["Min"] = response["responseData"]["min"];
+								graphData["Min"] = response["responseData"]["MinDFA"];
 
 								// 遷移図作成
 								createGraph(graphData);
@@ -214,6 +265,18 @@ function fusionRequest(){
 							},
 							error: function() {// エラー処理
 								alert("サーバ側でエラーが発生しました.\n時間をおいて再度試してください.");
+
+								// テスト用コード
+								// 遷移図作成用データ
+								var graphData = new Object;
+								graphData["srcData1"] = file1Data;
+								graphData["srcData2"] = null;
+								graphData["DFA"] = testData;
+								graphData["NFA"] = testData;
+								graphData["Min"] = testData;
+
+								// 遷移図作成
+								createGraph(graphData);
 							},
 							complete: function() {// 完了処理(必ず実行)
 								console.log("*** complete ***");
@@ -264,7 +327,7 @@ function fusionRequest(){
 							// Ajax通信開始
 							$.ajax({
 								type:"get",
-								url:"FusionRequest/Fusion",
+								url:"/FusionRequest/Fusion",
 								data:request,
 								contentType: 'application/json',
 								dataType: "json",
@@ -284,7 +347,7 @@ function fusionRequest(){
 									graphData["srcData2"] = file2Data;
 									graphData["DFA"] = response["responseData"]["dfa"];
 									graphData["NFA"] = response["responseData"]["nfa"];
-									graphData["Min"] = response["responseData"]["min"];
+									graphData["Min"] = response["responseData"]["MinDFA"];
 
 									// 遷移図作成
 									createGraph(graphData);
@@ -292,6 +355,18 @@ function fusionRequest(){
 								},
 								error: function() {// エラー処理
 									alert("サーバ側でエラーが発生しました.\n時間をおいて再度試してください.");
+
+									// テスト用コード
+									// 遷移図作成用データ
+									var graphData = new Object;
+									graphData["srcData1"] = file1Data;
+									graphData["srcData2"] = file2Data;
+									graphData["DFA"] = testData;
+									graphData["NFA"] = testData;
+									graphData["Min"] = testData;
+
+									// 遷移図作成
+									createGraph(graphData);
 								},
 								complete: function() {// 完了処理(必ず実行)
 									console.log("*** complete ***");
@@ -318,7 +393,6 @@ function fusionRequest(){
    		$("submitButton").prop("disabled", false);
    		return;
 		}
-
 	}
 }
 
@@ -382,8 +456,12 @@ function createGraph(graphData){
 	var toDFA = getCheckBox_toDFA();	// NFAをDFAにするか
 	var toMin = getCheckBox_toMin();	// 最小化するか
 	var radio = getFusionRadio(); // 処理の番号
+	var radioStr = getProcessStr(radio);
 
-	// 最初は全部隠しておく
+	// 親表示スペース
+	$("#graphSpace").show();
+
+	// 最初は子要素全部隠しておく
 	$("#graphSpace_src").hide();
 	$("#graphSpace_NFA").hide();
 	$("#graphSpace_DFA").hide();
@@ -391,6 +469,11 @@ function createGraph(graphData){
 
 	// 表示スペース初期化
 	initGraphSpace();
+
+	// 表示スペースの見出しを変更
+	$("#graphSpace_NFA_header").text("出力結果:"+ radioStr +"(NFA)");
+	$("#graphSpace_DFA_header").text("出力結果:"+ radioStr +"(DFA)");
+	$("#graphSpace_Min_header").text("出力結果:"+ radioStr +"(最小化)");
 
 	if (showSrc) {// 入力データを表示
 		$("#graphSpace_src").show();
@@ -405,18 +488,23 @@ function createGraph(graphData){
 	if (radio == 3 || radio == 7) {// 処理が閉包か連接の時
 		// 閉包,連接はNFA,DFAが返ってくる
 		if (toDFA) {
+			$("#graphSpace_NFA").show();
+			$("#graphSpace_DFA").show();
 			createGraphData("#graphSpace_NFA1", graphData["NFA"]);
 			createGraphData("#graphSpace_DFA1", graphData["DFA"]);
 		} else{
+			$("#graphSpace_NFA").show();
 			createGraphData("#graphSpace_NFA1", graphData["NFA"]);
 		}
 	}else{
 		// それ以外の処理はDFAしか返ってこない
+		$("#graphSpace_DFA").show();
 		createGraphData("#graphSpace_DFA1", graphData["DFA"]);
 	}
 
 	if (toMin && radio != 1) {// 最小化されたデータを表示(選択された処理が最小化の時以外)
 		// radio = 1の時(最小化の時)はgraphData["DFA"]がすでに最小化になっている
+		$("#graphSpace_Min").show();
 		createGraphData("#graphSpace_Min1", graphData["Min"]);
 	}
 }
@@ -460,7 +548,7 @@ function createGraphData(space, data){
 
 	var paper = new joint.dia.Paper({
 		el: $(space),
-		width: 800,
+		width: 400,
 		height: 600,
 		gridSize: 1,
 		model: graph

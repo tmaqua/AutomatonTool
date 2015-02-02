@@ -12,9 +12,9 @@
 
   </head>
   <body>
-<h1>合成・変換</h1>
   <div class="container">
-    
+    <h2>合成・変換</h2>
+
     <!-- 合成処理選択 -->
     <div class="row">
       <h4>1. 処理を選びます</h4>
@@ -77,43 +77,38 @@
 
     <!-- ファイル選択 -->
     <div class="row">
-
-    <h4>2. ファイルを読み込ませます</h4>
-
-    <div class="col-md-7">
-      
-    
-      <!-- 編集ファイル読み込み1 -->
-      <input type="file" id="fileInput1" style="display:none">
-      <div class="input-group input-group-lg">
-        <span class="input-group-btn">
-          <button class="btn btn-default" type="button" onclick="$('#fileInput1').click();">
-            <img src="image/icon.png" height="32" width="32" />
-          </button>
-        </span>
-        <input id="fileNameSpace1" type="text" class="form-control" placeholder="select file..." disabled>
-      </div><!-- /.編集ファイル読み込み1 -->
-
-      <!-- 編集ファイル読み込み2 -->
-      <div id="file2">
-        <input type="file" id="fileInput2" style="display:none">
+      <h4>2. ファイルを読み込ませます</h4>
+      <div class="col-md-7">
+        <!-- 編集ファイル読み込み1 -->
+        <input type="file" id="fileInput1" style="display:none">
         <div class="input-group input-group-lg">
           <span class="input-group-btn">
-            <button class="btn btn-default" type="button" onclick="$('#fileInput2').click();">
+            <button class="btn btn-default" type="button" onclick="$('#fileInput1').click();">
               <img src="image/icon.png" height="32" width="32" />
             </button>
           </span>
-          <input id="fileNameSpace2" type="text" class="form-control" placeholder="select file..." disabled>
-        </div>
-      </div><!-- /.編集ファイル読み込み2 -->
+          <input id="fileNameSpace1" type="text" class="form-control" placeholder="select file..." disabled>
+        </div><!-- /.編集ファイル読み込み1 -->
 
+        <!-- 編集ファイル読み込み2 -->
+        <div id="file2">
+          <input type="file" id="fileInput2" style="display:none">
+          <div class="input-group input-group-lg">
+            <span class="input-group-btn">
+              <button class="btn btn-default" type="button" onclick="$('#fileInput2').click();">
+               <img src="image/icon.png" height="32" width="32" />
+              </button>
+            </span>
+            <input id="fileNameSpace2" type="text" class="form-control" placeholder="select file..." disabled>
+          </div>
+        </div><!-- /.編集ファイル読み込み2 -->
       </div>
     </div><!-- /.ファイル選択 -->
 
     <!-- オプション選択 -->
     <div class="row">
 
-    <h4>3. 表示オプションを選びます</h4>
+      <h4>3. 表示オプションを選びます</h4>
       <!-- 表示オプションチェックボックス -->
       <div class="form-group col-md-8">
         <!-- チェックボックス0 -->
@@ -143,21 +138,21 @@
 
     <!-- 遷移図表示スペース -->
     <div id="graphSpace">
-      <div id="graphSpace_src">
-        <h2>入力データ</h2>
-        <div id="graphSpace_src1"></div>
-        <div id="graphSpace_src2"></div>
+      <div id="graphSpace_src" class="row">
+        <h2>入力オートマトン</h2>
+        <div id="graphSpace_src1" class="col-md-6"></div>
+        <div id="graphSpace_src2" class="col-md-6"></div>
       </div>
       <div id="graphSpace_NFA">
-        <h2>レスポンスデータ(NFA)</h2>
+        <h2 id="graphSpace_NFA_header">出力結果(NFA)</h2>
         <div id="graphSpace_NFA1"></div>
       </div>
       <div id="graphSpace_DFA">
-        <h2>レスポンスデータ(DFA)</h2>
+        <h2 id="graphSpace_DFA_header">出力結果(DFA)</h2>
         <div id="graphSpace_DFA1"></div>
       </div>
       <div id="graphSpace_Min">
-        <h2>レスポンスデータ(最小化)</h2>
+        <h2 id="graphSpace_Min_header">出力結果(最小化)</h2>
         <div id="graphSpace_Min1"></div>
       </div>
     </div>

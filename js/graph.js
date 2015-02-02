@@ -56,10 +56,9 @@ function createState(graphData, graph) {
     var start = createStartCell(graph);
 
     for (var i = 0; i < stateLen; i++) {
-        // var x = y = 100+100*i;
         var t = 2.0 * Math.PI * (i) / stateLen;
-        var x = 230 * Math.cos(t)+400;
-        var y = 230 * Math.sin(t)+300;
+        var x = 230 * Math.cos(t)+300;
+        var y = 230 * Math.sin(t)+250;
         var label = graphData.states[i];
         var temp;
         if (graphData.finishState.indexOf(label) == -1) {
