@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>オートマトンエディタ</title>
+    <meta charset="utf-8">
+
+    <!-- import -->
+    <script src="js/import.js"></script>
+
+    <!-- load javascript -->
+    <script src="js/read.js"></script>
+  </head>
+  <body>
+
+  <div class="container">
+    <!-- 入力/編集-->
+    <div class="row">
+
+      <!-- 遷移表新規作成 -->
+      <div class="col-md-6">
+        <h1>新規作成</h1>
+        <div class="row">
+          <div class="col-md-11 col-md-offset-1">
+            <div class="input-group">
+              <span class="input-group-addon">Symbol Σ=</span>
+              <input type="text" class="form-control" placeholder="a,b,c" id="symbols">
+            </div>
+            <div class="input-group">
+              <span class="input-group-addon">State Num</span>
+              <input type="text" class="form-control" placeholder="3" id="states">
+            </div>
+
+            <!-- ボタン 入力データから遷移表作成-->
+            <button type="button" class="btn btn-default" onclick="newCreateGrid()">
+              作成
+            </button>
+
+          </div><!-- /.col-md-11 -->
+        </div><!-- /.row -->
+      </div><!-- /.遷移表新規作成 -->
+
+      <!-- 遷移表読み込み -->
+      <div class="col-md-6">
+        <h1>ファイル編集</h1>
+        <div class="row">
+          <div class="col-md-11 col-md-offset-1">
+
+            <!-- 編集ファイル読み込み -->
+            <input type="file" id="fileInput" style="display:none">
+            <div class="input-group input-group-lg">
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="button" onclick="$('#fileInput').click();">
+                <img src="image/icon.png" height="32" width="32" />
+                </button>
+              </span>
+              <input id="fileNameSpace" type="text" class="form-control" placeholder="select file..." disabled>
+            </div><!-- /.input-group -->
+
+            <!-- ボタン ファイル読み込み後遷移表表示-->
+            <button type="button" class="btn btn-default" id="submitButton" onclick="loadGrid()">
+              編集
+            </button>
+
+          </div><!-- /.col-md-11 -->
+        </div><!-- /.row -->
+      </div><!-- /.遷移表読み込み -->
+
+    </div><!-- /.入力編集row -->
+
+    <!-- 遷移表 -->
+    <div class="row" id="gridSpace">
+      <h1>状態遷移表</h1>
+
+      <!-- 遷移表表示スペース -->
+      <div class="col-md-9">
+        <!-- <div id="myGrid" style="height:400px;"></div> -->
+        <div id="myGrid"></div>
+      </div><!-- /.遷移表表示スペース -->
+
+      <!-- ログ表示スペース -->
+      <div class="col-md-3">
+        <h3>ログ表示</h3>
+        <label class="radio-inline">
+          <input type="radio" name="radioDFA" value="1" checked>DFA
+        </label>
+        <label class="radio-inline">
+          <input type="radio" name="radioDFA" value="0">NFA
+        </label>
+        <textarea class="form-control" id="description" style="height:300px;resize:none;"></textarea>
+
+        <!-- 遷移図用ボタングループ -->
+        <div class="btn-group">
+          <button type="button" class="btn btn-default" onclick="validateForGrid()">
+            表チェック
+          </button>
+          <button type="button" class="btn btn-default" onclick="showGraph()">
+            状態遷移図作成
+          </button>
+        </div><!-- /.遷移図用ボタングループ -->
+
+        <!-- 保存ボタン -->
+        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal">
+          データ保存
+        </button>
+
+      </div><!-- /.ログ表示スペース -->
+    </div><!-- /.遷移表 -->
+
+    <!-- 状態遷移図 -->
+    <div class="row" id="graphSpace">
+      <h1>状態遷移図</h1>
+      <div class="col-md-11">
+
+        <!-- 遷移図表示スペース -->
+        <div id="paper"></div>
+      </div><!-- /.col-md-11 -->
+    </div><!-- /.状態遷移図 -->
+
+
+  </div><!-- /.container -->
+
+  <!-- 保存用モーダル-->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <!-- モーダル　ヘッダ -->
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">
+            <span aria-hidden="true">&times;</span><span class="sr-only">閉じる</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabel">保存しますか?</h4>
+        </div><!-- /.モーダル　ヘッダ -->
+
+        <!-- モーダル　ボディ -->
+        <div class="modal-body">
+          <form class="form-inline" role="form">
+            <div class="form-group">
+              <label class="sr-only" for="exampleInputEmail2">File Name</label>
+                <input type="text" class="form-control" id="inputFileName" placeholder="Enter filename">
+            </div>
+          </form>
+        </div><!-- /.モーダル　ボディ -->
+
+        <!-- モーダル　フッタ -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+          <button type="button" class="btn btn-default">
+            <a id="download" target="_blank">保存</a>
+          </button>
+        </div><!-- /.モーダル　フッタ -->
+
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.保存用モーダル -->
+
+  </body>
+</html>

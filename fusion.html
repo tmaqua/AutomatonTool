@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>合成・変換</title>
+    <meta charset="utf-8">
+
+    <!-- import -->
+    <script src="js/import.js"></script>
+
+    <!-- load javascript -->
+    <script src="js/fusion.js"></script>
+
+  </head>
+  <body>
+<h1>合成・変換</h1>
+  <div class="container">
+    
+    <!-- 合成処理選択 -->
+    <div class="row">
+      <h4>1. 処理を選びます</h4>
+
+      <!-- 合成処理選択ラジオボタン -->
+      <div class="control-group col-md-11">
+        <div class="controls">
+
+          <!-- ラジオボタン0 NFA->DFA デフォルトでチェック -->
+          <label class="radio-inline">
+            <input type="radio" name="fusionRadio" value="0" onclick="toHideFileInput2()" checked>
+              NFA->DFA
+          </label>
+
+          <!-- ラジオボタン1 最小化  -->
+          <label class="radio-inline">
+            <input type="radio" name="fusionRadio" value="1" onclick="toHideFileInput2()">
+              最小化
+          </label>
+
+          <!-- ラジオボタン2 補集合  -->
+          <label class="radio-inline">
+            <input type="radio" name="fusionRadio" value="2" onclick="toHideFileInput2()">
+              補集合
+          </label>
+
+          <!-- ラジオボタン3 閉包  -->
+          <label class="radio-inline">
+            <input type="radio" name="fusionRadio" value="3" onclick="toHideFileInput2()">
+              閉包
+          </label>
+
+          <!-- ラジオボタン4 和集合  -->
+          <label class="radio-inline">
+            <input type="radio" name="fusionRadio" value="4" onclick="toHideFileInput2()">
+              和集合
+          </label>
+
+          <!-- ラジオボタン5 差集合  -->
+          <label class="radio-inline">
+            <input type="radio" name="fusionRadio" value="5" onclick="toHideFileInput2()">
+              差集合
+          </label>
+
+          <!-- ラジオボタン6 積集合  -->
+          <label class="radio-inline">
+            <input type="radio" name="fusionRadio" value="6" onclick="toHideFileInput2()">
+              積集合
+          </label>
+
+          <!-- ラジオボタン7 連接  -->
+          <label class="radio-inline">
+            <input type="radio" name="fusionRadio" value="7" onclick="toHideFileInput2()">
+              連接
+          </label>
+
+        </div>
+      </div><!-- /.合成処理選択ラジオボタン -->
+    </div><!-- /.合成処理選択 -->
+
+    <!-- ファイル選択 -->
+    <div class="row">
+
+    <h4>2. ファイルを読み込ませます</h4>
+
+    <div class="col-md-7">
+      
+    
+      <!-- 編集ファイル読み込み1 -->
+      <input type="file" id="fileInput1" style="display:none">
+      <div class="input-group input-group-lg">
+        <span class="input-group-btn">
+          <button class="btn btn-default" type="button" onclick="$('#fileInput1').click();">
+            <img src="image/icon.png" height="32" width="32" />
+          </button>
+        </span>
+        <input id="fileNameSpace1" type="text" class="form-control" placeholder="select file..." disabled>
+      </div><!-- /.編集ファイル読み込み1 -->
+
+      <!-- 編集ファイル読み込み2 -->
+      <div id="file2">
+        <input type="file" id="fileInput2" style="display:none">
+        <div class="input-group input-group-lg">
+          <span class="input-group-btn">
+            <button class="btn btn-default" type="button" onclick="$('#fileInput2').click();">
+              <img src="image/icon.png" height="32" width="32" />
+            </button>
+          </span>
+          <input id="fileNameSpace2" type="text" class="form-control" placeholder="select file..." disabled>
+        </div>
+      </div><!-- /.編集ファイル読み込み2 -->
+
+      </div>
+    </div><!-- /.ファイル選択 -->
+
+    <!-- オプション選択 -->
+    <div class="row">
+
+    <h4>3. 表示オプションを選びます</h4>
+      <!-- 表示オプションチェックボックス -->
+      <div class="form-group col-md-8">
+        <!-- チェックボックス0 -->
+        <label class="checkbox-inline">
+          <input type="checkbox" id="checkbox_showSrc" /> 入力データの遷移図も表示する
+        </label>
+
+        <!-- チェックボックス1 -->
+        <label class="checkbox-inline">
+          <input type="checkbox" id="checkbox_toDFA" /> 結果がNFAの時,DFAに変換したものも表示する
+        </label>
+
+        <!-- チェックボックス2 -->
+        <label class="checkbox-inline">
+          <input type="checkbox" id="checkbox_toMin" /> 結果を最小化する
+        </label>
+
+      </div><!-- /.表示オプションチェックボックス -->
+    </div><!-- /.オプション選択 -->
+
+    <!-- 合成リクエストボタン -->
+    <div class="row">
+      <button type="button" class="btn btn-default" id="submitButton" onclick="fusionRequest()">
+        合成・変換
+      </button>
+    </div><!-- /.合成リクエストボタン -->
+
+    <!-- 遷移図表示スペース -->
+    <div id="graphSpace">
+      <div id="graphSpace_src">
+        <h2>入力データ</h2>
+        <div id="graphSpace_src1"></div>
+        <div id="graphSpace_src2"></div>
+      </div>
+      <div id="graphSpace_NFA">
+        <h2>レスポンスデータ(NFA)</h2>
+        <div id="graphSpace_NFA1"></div>
+      </div>
+      <div id="graphSpace_DFA">
+        <h2>レスポンスデータ(DFA)</h2>
+        <div id="graphSpace_DFA1"></div>
+      </div>
+      <div id="graphSpace_Min">
+        <h2>レスポンスデータ(最小化)</h2>
+        <div id="graphSpace_Min1"></div>
+      </div>
+    </div>
+
+  </div><!-- /.container -->
+  
+  <!-- 保存用モーダル-->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <!-- モーダル　ヘッダ -->
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">
+            <span aria-hidden="true">&times;</span><span class="sr-only">閉じる</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabel">保存しますか?</h4>
+        </div><!-- /.モーダル　ヘッダ -->
+
+        <!-- モーダル　ボディ -->
+        <div class="modal-body">
+          <form class="form-inline" role="form">
+            <div class="form-group">
+              <label class="sr-only" for="exampleInputEmail2">File Name</label>
+                <input type="text" class="form-control" id="inputFileName" placeholder="Enter filename">
+            </div>
+          </form>
+        </div><!-- /.モーダル　ボディ -->
+
+        <!-- モーダル　フッタ -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+          <button type="button" class="btn btn-default">
+            <a id="download" target="_blank">保存</a>
+          </button>
+        </div><!-- /.モーダル　フッタ -->
+
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.保存用モーダル -->
+
+  </body>
+</html>
