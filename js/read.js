@@ -862,29 +862,37 @@ function showGraph(){
 function writeToLocal(){
    var fileName = $("#inputFileName").val() + ".txt";
    var data = { x: 42, s: "hello, world", d: new Date() };
+   var json = JSON.stringify(data);
 
    if (window.navigator.msSaveBlob) {
    	alert("win");
-   	var json = JSON.stringify(data);
-   	var blob = new Blob([json], {type: "octet/stream"});
+   	var blob = new Blob([json], {type: "text/plain"});
+   	// var blob = new Blob([json], {type: "octet/stream"});
    	window.navigator.msSaveBlob(blob, fileName); 
    } else{
    	alert("not win");
-   	var saveData = (function () {
-   		var a = document.createElement("a");
-   		document.body.appendChild(a);
-   		a.style = "display: none";
-   		return function (data, fileName) {
-   			var json = JSON.stringify(data),
-   			blob = new Blob([json], {type: "octet/stream"}),
-   			url = window.URL.createObjectURL(blob);
-   			a.href = url;
-   			a.download = fileName;
-   			a.click();
-   			window.URL.revokeObjectURL(url);
-   		};}());
+   	var a = document.createElement("a");
+   	var blob = new Blob([json], {type: "text/plain"});
+   	var url = window.URL.createObjectURL(blob);
+   	a.href = url;
+   	a.download = fileName;
+   	a.click();
+   	window.URL.revokeObjectURL(url);
+   	// var saveData = (function () {
+   	// 	var a = document.createElement("a");
+   	// 	document.body.appendChild(a);
+   	// 	a.style = "display: none";
+   	// 	return function (data, fileName) {
+   	// 		var json = JSON.stringify(data),
+   	// 		blob = new Blob([json], {type: "octet/stream"}),
+   	// 		url = window.URL.createObjectURL(blob);
+   	// 		a.href = url;
+   	// 		a.download = fileName;
+   	// 		a.click();
+   	// 		window.URL.revokeObjectURL(url);
+   	// 	};}());
 
-   	saveData(data, fileName);
+   	// saveData(data, fileName);
    }
 }
 
