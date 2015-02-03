@@ -859,3 +859,42 @@ function showGraph(){
 	}
 }
 
+function writeToLocal(){
+   var fileName = $("#inputFileName").val();
+   var data = { x: 42, s: "hello, world", d: new Date() };
+
+   var saveData = (function () {
+   var a = document.createElement("a");
+   document.body.appendChild(a);
+   a.style = "display: none";
+   return function (data, fileName) {
+		var json = JSON.stringify(data),
+		blob = new Blob([json], {type: "octet/stream"}),
+		url = window.URL.createObjectURL(blob);
+		a.href = url;
+		a.download = fileName;
+		a.click();
+		window.URL.revokeObjectURL(url);
+	};}());
+
+	saveData(data, fileName);
+}
+
+// function saveBlob(_blob,_file){
+// 	if( /*@cc_on ! @*/ false ){	// IEの場合
+// 		window.navigator.msSaveBlob(_blob, _file);
+//    }else{
+// 		var url = (window.URL || window.webkitURL);
+// 		var data = url.createObjectURL(_blob);
+// 		var e = document.createEvent("MouseEvents");
+// 		e.initMouseEvent("click", true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+// 		var a = document.createElementNS("http://www.w3.org/1999/xhtml", "a");
+// 		a.href = data;
+// 		a.download = _file;   
+// 		a.dispatchEvent(e);
+// 	}
+// }
+
+
+
+
