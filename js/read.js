@@ -864,12 +864,12 @@ function writeToLocal(){
    var data = { x: 42, s: "hello, world", d: new Date() };
 
    if (window.navigator.msSaveBlob) {
-   	console.log("win");
    	alert("win");
-   	var blob = new Blob([data]);
+   	var json = JSON.stringify(data);
+   	var blob = new Blob([json], {type: "octet/stream"});
    	window.navigator.msSaveBlob(blob, fileName); 
    } else{
-   	console.log("not win");
+   	alert("not win");
    	var saveData = (function () {
    		var a = document.createElement("a");
    		document.body.appendChild(a);
