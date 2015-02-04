@@ -859,16 +859,31 @@ function showGraph(){
 	}
 }
 
-function writeToLocal(){
-   var fileName = $("#inputFileName").val() + ".txt";
-   var data = { x: 42, s: "hello, world", d: new Date() };
-   var json = JSON.stringify(data);
+//**********************************************************************************
+// データ保存
+//**********************************************************************************
+
+/**
+writeToLocal()
+	graphData: 保存するデータ
+	graphDataがDFAだったら.dfa,NFAだったら.nfaファイルを作る
+	ファイル名は#inputFileNameの値を使う
+	writeToLocal()が呼ばれたら自動でダウンロードが始まる
+*/
+function writeToLocal(graphData){
+   var fileName = "";
+   if (graphData["isDFA"]) {// DFAだったら
+   	fileName = $("#inputFileName").val() + ".dfa";// .dfaファイルを作る
+   } else{
+   	fileName = $("#inputFileName").val() + ".nfa";// .nfaファイルを作る
+   }
+   var json = JSON.stringify(graphData);
    var blob = new Blob([json], {type: "text/plain"});
 
-   if (window.navigator.msSaveBlob) {
+   if (window.navigator.msSaveBlob) {// ブラウザがIEだったら (IE >= 10)
    	console.log("save: Internet Explorer");
    	window.navigator.msSaveBlob(blob, fileName); 
-   } else{
+   } else{// GoogleChromeとFireFoxだけ
    	console.log("save: GoogleChrome, FireFox");
    	var url = (window.URL || window.webkitURL);
    	var data = url.createObjectURL(blob);
@@ -878,22 +893,6 @@ function writeToLocal(){
       a.href = data;
       a.download = fileName;   
       a.dispatchEvent(e);
-
-   	// var saveData = (function () {
-   	// 	var a = document.createElement("a");
-   	// 	document.body.appendChild(a);
-   	// 	a.style = "display: none";
-   	// 	return function (data, fileName) {
-   	// 		var json = JSON.stringify(data),
-   	// 		blob = new Blob([json], {type: "octet/stream"}),
-   	// 		url = window.URL.createObjectURL(blob);
-   	// 		a.href = url;
-   	// 		a.download = fileName;
-   	// 		a.click();
-   	// 		window.URL.revokeObjectURL(url);
-   	// 	};}());
-
-   	// saveData(data, fileName);
    }
 }
 

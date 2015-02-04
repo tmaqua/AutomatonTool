@@ -145,14 +145,23 @@
       </div>
       <div id="graphSpace_NFA">
         <h2 id="graphSpace_NFA_header">出力結果(NFA)</h2>
+        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal" id="saveNFA">
+          データ保存
+        </button>
         <div id="graphSpace_NFA1"></div>
       </div>
       <div id="graphSpace_DFA">
         <h2 id="graphSpace_DFA_header">出力結果(DFA)</h2>
+        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal" id="saveDFA">
+          データ保存
+        </button>
         <div id="graphSpace_DFA1"></div>
       </div>
       <div id="graphSpace_Min">
         <h2 id="graphSpace_Min_header">出力結果(最小化)</h2>
+        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal" id="saveMin">
+          データ保存
+        </button>
         <div id="graphSpace_Min1"></div>
       </div>
     </div>
@@ -185,7 +194,7 @@
         <!-- モーダル　フッタ -->
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
-          <button type="button" class="btn btn-default">保存</button>
+          <button type="button" class="btn btn-default" onclick="writeToLocal(downloadData)">保存</button>
         </div><!-- /.モーダル　フッタ -->
 
       </div><!-- /.modal-content -->

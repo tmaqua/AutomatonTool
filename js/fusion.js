@@ -24,6 +24,19 @@ $(function(){
 		}
 	});
 
+	$("#saveNFA").click(function(){
+		downloadData = tempData["NFA"];
+	});
+
+	$("#saveDFA").click(function(){
+		downloadData = tempData["DFA"];
+	});
+
+	$("#saveMin").click(function(){
+		downloadData = tempData["Min"];
+	});
+
+
 	// 最初は遷移図の表示スペース,DOM"file2"を隠す
 	$("#graphSpace").hide();
 	$("#file2").hide();
@@ -46,6 +59,8 @@ var testData = {
 	"symbols": ["a", "b"],
 	"isDFA": true
 };
+
+var downloadData,tempData;
 
 //*----------------------------------------------------------------
 //* DOMの値取得、編集系
@@ -452,6 +467,8 @@ createGraph()
 	graphData: サーバからのレスポンスデータ
 */
 function createGraph(graphData){
+	tempData = graphData; // ダウンロード用にデータをグローバルにコピー
+
 	var showSrc = getCheckBox_showSrc(); // 入力データを表示するか
 	var toDFA = getCheckBox_toDFA();	// NFAをDFAにするか
 	var toMin = getCheckBox_toMin();	// 最小化するか
@@ -557,4 +574,39 @@ function createGraphData(space, data){
 	createState(data, graph);
 }
 
+//**********************************************************************************
+// データ保存
+//**********************************************************************************
 
+/**
+writeToLocal()
+	graphData: 保存するデータ
+	graphDataがDFAだったら.dfa,NFAだったら.nfaファイルを作る
+	ファイル名は#inputFileNameの値を使う
+	writeToLocal()が呼ばれたら自動でダウンロードが始まる
+*/
+function writeToLocal(graphData){
+   var fileName = "";
+   if (graphData["isDFA"]) {// DFAだったら
+   	fileName = $("#inputFileName").val() + ".dfa";// .dfaファイルを作る
+   } else{
+   	fileName = $("#inputFileName").val() + ".nfa";// .nfaファイルを作る
+   }
+   var json = JSON.stringify(graphData);
+   var blob = new Blob([json], {type: "text/plain"});
+
+   if (window.navigator.msSaveBlob) {// ブラウザがIEだったら (IE >= 10)
+   	console.log("save: Internet Explorer");
+   	window.navigator.msSaveBlob(blob, fileName); 
+   } else{// GoogleChromeとFireFoxだけ
+   	console.log("save: GoogleChrome, FireFox");
+   	var url = (window.URL || window.webkitURL);
+   	var data = url.createObjectURL(blob);
+   	var e = document.createEvent("MouseEvents");
+      e.initMouseEvent("click", true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+      var a = document.createElementNS("http://www.w3.org/1999/xhtml", "a");
+      a.href = data;
+      a.download = fileName;   
+      a.dispatchEvent(e);
+   }
+}
