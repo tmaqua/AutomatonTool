@@ -362,6 +362,19 @@ function fusionRequest(){
 									alert("サーバ側でエラーが発生しました.\n時間をおいて再度試してください.");
 
 									// testData
+									var testData = {
+									"links": [
+										{"source": "0", "target": "1", "attached": "a"},
+										{"source": "0", "target": "0", "attached": "b"},
+										{"source": "1", "target": "0", "attached": "b"},
+										{"source": "1", "target": "1", "attached": "a"}
+									],
+									"states": ["0", "1"],
+									"startState": ["0"],
+									"finishState": ["1"],
+									"symbols": ["a", "b"],
+									"isDFA": true
+									};
 									// 遷移図作成用データ
 									var graphData = new Object;
 									graphData["srcData1"] = file1Data;
