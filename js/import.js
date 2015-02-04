@@ -24,7 +24,7 @@ document.write(
 
 // load myJointJS function
 document.write(
-'<script type="text/javascript" src="js/graph.js"></script>'
+'<script type="text/javascript" src="js/common.js"></script>'
 );
 
 /* load css */

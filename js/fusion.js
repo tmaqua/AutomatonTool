@@ -44,6 +44,7 @@ $(function(){
 
 	// チェックボックスのデフォルト設定
 	setCheckBox();
+
 });
 
 // ダウンロード用のグラフデータ
@@ -258,13 +259,25 @@ function fusionRequest(){
 
 								// 遷移図作成
 								createGraph(graphData);
-
 							},
 							error: function() {// エラー処理
 								alert("サーバ側でエラーが発生しました.\n時間をおいて再度試してください.");
 
 								// テスト用コード
 								// 遷移図作成用データ
+								var testData = {
+									"links": [
+										{"source": "0", "target": "1", "attached": "a"},
+										{"source": "0", "target": "0", "attached": "b"},
+										{"source": "1", "target": "0", "attached": "b"},
+										{"source": "1", "target": "1", "attached": "a"}
+									],
+									"states": ["0", "1"],
+									"startState": ["0"],
+									"finishState": ["1"],
+									"symbols": ["a", "b"],
+									"isDFA": true
+								};
 								var graphData = new Object;
 								graphData["srcData1"] = file1Data;
 								graphData["srcData2"] = null;
@@ -347,6 +360,18 @@ function fusionRequest(){
 								},
 								error: function() {// エラー処理
 									alert("サーバ側でエラーが発生しました.\n時間をおいて再度試してください.");
+
+									// testData
+									// 遷移図作成用データ
+									var graphData = new Object;
+									graphData["srcData1"] = file1Data;
+									graphData["srcData2"] = file2Data;
+									graphData["DFA"] = testData;
+									graphData["NFA"] = testData;
+									graphData["Min"] = testData;
+
+									// 遷移図作成
+									createGraph(graphData);
 								},
 								complete: function() {// 完了処理(必ず実行)
 									console.log("*** complete ***");
@@ -489,6 +514,13 @@ function createGraph(graphData){
 		$("#graphSpace_Min").show();
 		createGraphData("#graphSpace_Min1", graphData["Min"]);
 	}
+
+	// 遷移図表示スペースにスクロール
+	var target = $("#graphSpace");
+	var position = target.offset().top;
+	var speed = 400;
+	$('body,html').animate({scrollTop:position}, speed, 'swing');
+
 }
 
 /**
@@ -530,8 +562,8 @@ function createGraphData(space, data){
 
 	var paper = new joint.dia.Paper({
 		el: $(space),
-		width: 400,
-		height: 600,
+		width: 500,
+		height: 500,
 		gridSize: 1,
 		model: graph
 	});
