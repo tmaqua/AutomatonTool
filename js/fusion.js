@@ -24,6 +24,7 @@ $(function(){
 		}
 	});
 
+	// 各保存ボタンが押されたらダウンロードするデータを決める
 	$("#saveNFA").click(function(){
 		downloadData = tempData["NFA"];
 	});
@@ -45,21 +46,7 @@ $(function(){
 	setCheckBox();
 });
 
-
-var testData = {
-	"links": [
-		{"source": "0", "target": "1", "attached": "a"},
-		{"source": "0", "target": "0", "attached": "b"},
-		{"source": "1", "target": "0", "attached": "b"},
-		{"source": "1", "target": "1", "attached": "a"}
-	],
-	"states": ["0", "1"],
-	"startState": ["0"],
-	"finishState": ["1"],
-	"symbols": ["a", "b"],
-	"isDFA": true
-};
-
+// ダウンロード用のグラフデータ
 var downloadData,tempData;
 
 //*----------------------------------------------------------------
@@ -257,11 +244,6 @@ function fusionRequest(){
 							contentType: 'application/json',
 							dataType: "json",
 							success: function(response) {   // 200 OK時
-								//json Arrayの先頭が成功フラグ、失敗の場合2番目がエラーメッセージ
-								if (!response[0]) {    // サーバが失敗を返した場合
-									alert("Transaction error. " + response[1]);
-									return;
-								}
 								// 成功時処理
 								console.log("***success***");
 								console.log(response);
@@ -272,7 +254,7 @@ function fusionRequest(){
 								graphData["srcData2"] = null;
 								graphData["DFA"] = response["responseData"]["dfa"];
 								graphData["NFA"] = response["responseData"]["nfa"];
-								graphData["Min"] = response["responseData"]["MinDFA"];
+								graphData["Min"] = response["responseData"]["minDFA"];
 
 								// 遷移図作成
 								createGraph(graphData);
@@ -347,11 +329,6 @@ function fusionRequest(){
 								contentType: 'application/json',
 								dataType: "json",
 								success: function(response) {   // 200 OK時
-									//json Arrayの先頭が成功フラグ、失敗の場合2番目がエラーメッセージ
-									if (!response[0]) {    // サーバが失敗を返した場合
-										alert("Transaction error. " + response[1]);
-										return;
-									}
 									// 成功時処理
 									console.log("***success***");
 									console.log(response);
@@ -362,7 +339,7 @@ function fusionRequest(){
 									graphData["srcData2"] = file2Data;
 									graphData["DFA"] = response["responseData"]["dfa"];
 									graphData["NFA"] = response["responseData"]["nfa"];
-									graphData["Min"] = response["responseData"]["MinDFA"];
+									graphData["Min"] = response["responseData"]["minDFA"];
 
 									// 遷移図作成
 									createGraph(graphData);
@@ -370,18 +347,6 @@ function fusionRequest(){
 								},
 								error: function() {// エラー処理
 									alert("サーバ側でエラーが発生しました.\n時間をおいて再度試してください.");
-
-									// テスト用コード
-									// 遷移図作成用データ
-									var graphData = new Object;
-									graphData["srcData1"] = file1Data;
-									graphData["srcData2"] = file2Data;
-									graphData["DFA"] = testData;
-									graphData["NFA"] = testData;
-									graphData["Min"] = testData;
-
-									// 遷移図作成
-									createGraph(graphData);
 								},
 								complete: function() {// 完了処理(必ず実行)
 									console.log("*** complete ***");
