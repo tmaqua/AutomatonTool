@@ -51,6 +51,14 @@ writeToLocal()
 */
 function writeToLocal(graphData){
     var fileName = "";
+
+    // ファイル名が空だったら
+    if ($("#inputFileName").val() == "") {
+        alert("ファイル名が入力されていません.");
+        return;
+    }
+
+
     if (graphData["isDFA"]) {// DFAだったら
         fileName = $("#inputFileName").val() + ".dfa";// .dfaファイルを作る
     } else{
