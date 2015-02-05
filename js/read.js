@@ -56,48 +56,6 @@ function checkInputData() {
 	return true;
 }
 
-/**
-checkLoadData()
-	読み込まれたファイルをチェック
-	OK-> true
-	NG -> false
-*/
-function checkLoadData(jsonData){
-	
-	var isDFA = jsonData["isDFA"];	// DFA(true)/NFA(false)取得
-	var links = jsonData["links"];	// 遷移関数取得
-	var states = jsonData["states"]; // 状態一覧取得
-
-	var startStateNum = jsonData["startState"].length;	// 初期状態数取得
-	var finishStateNum = jsonData["finishState"].length;	// 終了状態数取得
-	var linksNum = jsonData["links"].length;	// 遷移関数の数取得
-
-	if (isDFA && startStateNum != 1) {// DFA && 初期状態が２つ以上(もしくは0こ)ある
-		return false;
-	}
-
-	if (!isDFA && startStateNum == 0) {// NFA && 初期状態が0こ
-		return false;
-	}
-
-	if(finishStateNum == 0){	// 終了状態が0こ
-		return false;
-	}
-
-	for (var i = 0; i < linksNum; i++) {
-		// 遷移関数で示されている状態が状態一覧にあるか
-		if ($.inArray(links[i]["source"],states) < 0 ||
-			 $.inArray(links[i]["target"],states) < 0 
-			) {
-			// なかったらfalse
-			return false;
-		}
-	}
-
-	// チェック通ったらtrue
-	return true;
-}
-
 
 /**
 newCreateGrid ()
@@ -165,7 +123,9 @@ function loadGrid () {
 				var transFormatData = transDataFormat(fileData);
 				// console.log(fileData);
 
-				if (checkLoadData(transFormatData)) { // チェック通ったら遷移表作成
+				// 未完成データを編集可能にしたいのでエディタ画面でのファイル読み込みチェックは行わない
+				// ファイルのフォーマットだけ調べる
+				if (checkFileFormat(transFormatData)) { // チェック通ったら遷移表作成
 
 					// 遷移表は表示、遷移図は隠す
 					$("#gridSpace").show(100);
@@ -747,8 +707,30 @@ function printError(resultArray){
 	textArea.val(str);
 }
 
+//**********************************************************************************
+// 状態遷移図
+//**********************************************************************************
 
+/**
+checkFileFormat()
+	fileData: ファイルのデータ
+	ファイルの形式だけ調べる
+*/
+function checkFileFormat(fileData){
+	if ("links" in fileData 
+		&& "states" in fileData 
+		&& "startState" in fileData 
+		&& "finishState" in fileData
+		&& "symbols" in fileData
+		&& "isDFA" in fileData) {
+		console.log("valid data");
+		return true;
+	} else{
+		console.log("invalid data");
+		return false;
+	}
 
+}
 
 //**********************************************************************************
 // 状態遷移図
@@ -803,44 +785,6 @@ function showGraph(){
 		return;
 	}
 }
-
-//**********************************************************************************
-// データ保存
-//**********************************************************************************
-
-/**
-writeToLocal()
-	graphData: 保存するデータ
-	graphDataがDFAだったら.dfa,NFAだったら.nfaファイルを作る
-	ファイル名は#inputFileNameの値を使う
-	writeToLocal()が呼ばれたら自動でダウンロードが始まる
-*/
-function writeToLocal(graphData){
-   var fileName = "";
-   if (graphData["isDFA"]) {// DFAだったら
-   	fileName = $("#inputFileName").val() + ".dfa";// .dfaファイルを作る
-   } else{
-   	fileName = $("#inputFileName").val() + ".nfa";// .nfaファイルを作る
-   }
-   var json = JSON.stringify(graphData);
-   var blob = new Blob([json], {type: "text/plain"});
-
-   if (window.navigator.msSaveBlob) {// ブラウザがIEだったら (IE >= 10)
-   	console.log("save: Internet Explorer");
-   	window.navigator.msSaveBlob(blob, fileName); 
-   } else{// GoogleChromeとFireFoxだけ
-   	console.log("save: GoogleChrome, FireFox");
-   	var url = (window.URL || window.webkitURL);
-   	var data = url.createObjectURL(blob);
-   	var e = document.createEvent("MouseEvents");
-      e.initMouseEvent("click", true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-      var a = document.createElementNS("http://www.w3.org/1999/xhtml", "a");
-      a.href = data;
-      a.download = fileName;   
-      a.dispatchEvent(e);
-   }
-}
-
 
 
 

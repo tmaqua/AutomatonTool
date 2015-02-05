@@ -169,41 +169,6 @@ function setCheckBox(){
 	}
 }
 
-/**
-getProcessStr()
-	num: 処理番号
-	numから処理名の文字列を返す
-*/
-function getProcessStr(num){
-	var result;
-	switch(num){
-		case 0:
-			result = "NFA->DFA";
-			break;
-		case 1:
-			result = "最小化";
-			break;
-		case 2:
-			result = "補集合";
-			break;
-		case 3:
-			result = "閉包";
-			break;
-		case 4:
-			result = "和集合";
-			break;
-		case 5:
-			result = "差集合";
-			break;
-		case 6:
-			result = "積集合";
-			break;
-		case 7:
-			result = "連接";
-			break;
-	}
-	return result;
-}
 
 //*----------------------------------------------------------------
 //* ファイル読み込み
@@ -267,13 +232,13 @@ function fusionRequest(){
 								// 遷移図作成用データ
 								var testData = {
 									"links": [
-										{"source": "0", "target": "1", "attached": "a"},
-										{"source": "0", "target": "0", "attached": "b"},
-										{"source": "1", "target": "0", "attached": "b"},
+										{"source": "[0|0']", "target": "1", "attached": "a"},
+										{"source": "[0|0']", "target": "[0|0']", "attached": "b"},
+										{"source": "1", "target": "[0|0']", "attached": "b"},
 										{"source": "1", "target": "1", "attached": "a"}
 									],
-									"states": ["0", "1"],
-									"startState": ["0"],
+									"states": ["[0|0']", "1"],
+									"startState": ["[0|0']"],
 									"finishState": ["1"],
 									"symbols": ["a", "b"],
 									"isDFA": true
@@ -363,17 +328,17 @@ function fusionRequest(){
 
 									// testData
 									var testData = {
-									"links": [
-										{"source": "0", "target": "1", "attached": "a"},
-										{"source": "0", "target": "0", "attached": "b"},
-										{"source": "1", "target": "0", "attached": "b"},
-										{"source": "1", "target": "1", "attached": "a"}
-									],
-									"states": ["0", "1"],
-									"startState": ["0"],
-									"finishState": ["1"],
-									"symbols": ["a", "b"],
-									"isDFA": true
+										"links": [
+											{"source": "[0|0'|z]", "target": "1", "attached": "a"},
+											{"source": "[0|0'|z]", "target": "[0|0'|z]", "attached": "b"},
+											{"source": "1", "target": "[0|0'|z]", "attached": "b"},
+											{"source": "1", "target": "1", "attached": "a"}
+										],
+										"states": ["[0|0'|z]", "1"],
+										"startState": ["[0|0'|z]"],
+										"finishState": ["1"],
+										"symbols": ["a", "b"],
+										"isDFA": true
 									};
 									// 遷移図作成用データ
 									var graphData = new Object;
@@ -414,51 +379,6 @@ function fusionRequest(){
 	}
 }
 
-//*----------------------------------------------------------------
-//* ファイルチェック
-//*----------------------------------------------------------------
-
-/**
-checkLoadData()
-	読み込まれたファイルをチェック
-	OK-> true
-	NG -> false
-*/
-function checkLoadData(jsonData){
-	
-	var isDFA = jsonData["isDFA"];	// DFA(true)/NFA(false)取得
-	var links = jsonData["links"];	// 遷移関数取得
-	var states = jsonData["states"]; // 状態一覧取得
-
-	var startStateNum = jsonData["startState"].length;	// 初期状態数取得
-	var finishStateNum = jsonData["finishState"].length;	// 終了状態数取得
-	var linksNum = jsonData["links"].length;	// 遷移関数の数取得
-
-	if (isDFA && startStateNum != 1) {// DFA && 初期状態が２つ以上(もしくは0こ)ある
-		return false;
-	}
-
-	if (!isDFA && startStateNum == 0) {// NFA && 初期状態が0こ
-		return false;
-	}
-
-	if(finishStateNum == 0){	// 終了状態が0こ
-		return false;
-	}
-
-	for (var i = 0; i < linksNum; i++) {
-		// 遷移関数で示されている状態が状態一覧にあるか
-		if ($.inArray(links[i]["source"],states) < 0 ||
-			 $.inArray(links[i]["target"],states) < 0 
-			) {
-			// なかったらfalse
-			return false;
-		}
-	}
-
-	// チェック通ったらtrue
-	return true;
-}
 
 //*----------------------------------------------------------------
 //* 遷移図作成
@@ -581,42 +501,6 @@ function createGraphData(space, data){
 		model: graph
 	});
 
-	createState(data, graph);
+	createState(transDataFormat(data), graph);
 }
 
-//**********************************************************************************
-// データ保存
-//**********************************************************************************
-
-/**
-writeToLocal()
-	graphData: 保存するデータ
-	graphDataがDFAだったら.dfa,NFAだったら.nfaファイルを作る
-	ファイル名は#inputFileNameの値を使う
-	writeToLocal()が呼ばれたら自動でダウンロードが始まる
-*/
-function writeToLocal(graphData){
-   var fileName = "";
-   if (graphData["isDFA"]) {// DFAだったら
-   	fileName = $("#inputFileName").val() + ".dfa";// .dfaファイルを作る
-   } else{
-   	fileName = $("#inputFileName").val() + ".nfa";// .nfaファイルを作る
-   }
-   var json = JSON.stringify(graphData);
-   var blob = new Blob([json], {type: "text/plain"});
-
-   if (window.navigator.msSaveBlob) {// ブラウザがIEだったら (IE >= 10)
-   	console.log("save: Internet Explorer");
-   	window.navigator.msSaveBlob(blob, fileName); 
-   } else{// GoogleChromeとFireFoxだけ
-   	console.log("save: GoogleChrome, FireFox");
-   	var url = (window.URL || window.webkitURL);
-   	var data = url.createObjectURL(blob);
-   	var e = document.createEvent("MouseEvents");
-      e.initMouseEvent("click", true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-      var a = document.createElementNS("http://www.w3.org/1999/xhtml", "a");
-      a.href = data;
-      a.download = fileName;   
-      a.dispatchEvent(e);
-   }
-}
