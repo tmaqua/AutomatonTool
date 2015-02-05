@@ -145,23 +145,23 @@ function splitComma (str) {
 }
 
 
-/**
-splitString()
-    カンマで文字を区切ったあと{A|B}を{A,B}に変換
-*/
-function splitString(str){
-    var splitPattern = /\s*(?:,)\s*/;
-    var temp = str.replace(/\{(.+?),(.+?)\}/g, "{$1|$2}");
-    // console.log(temp);
-    var splits = temp.split(splitPattern);
-    var result = new Array;
+// /**
+// splitString()
+//     カンマで文字を区切ったあと{A|B}を{A,B}に変換
+// */
+// function splitString(str){
+//     var splitPattern = /\s*(?:,)\s*/;
+//     var temp = str.replace(/\{(.+?),(.+?)\}/g, "{$1|$2}");
+//     // console.log(temp);
+//     var splits = temp.split(splitPattern);
+//     var result = new Array;
 
-    for (var i = 0; i < splits.length; i++) {
-        result.push(splits[i].replace(/\|/g, ","));
-    }
+//     for (var i = 0; i < splits.length; i++) {
+//         result.push(splits[i].replace(/\|/g, ","));
+//     }
 
-    return result;
-}
+//     return result;
+// }
 
 /**
 serchInAttached()
