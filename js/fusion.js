@@ -3,10 +3,11 @@ $(function(){
 	// ファイル読み込みボタンが押されたら
 	$("#fileInput1").change(function(){
 		var fileName = $(this).val();	// 読み込みファイル名取得
-		if (fileName.match(/\.dfa\b|\.nfa\b/)) {	// ファイル拡張子が.nfa .dfaだったら
-			// ファイルの名前を表示
-			$("#fileNameSpace1").val(fileName);
-		} else{
+		var radio = getFusionRadio();	// 処理番号
+		if ((radio == 0 && fileName.match(/\.nfa\b/)) // 処理番号0でNFAが読み込まれたら
+			|| (radio != 0 && fileName.match(/\.dfa\b/))) {// 処理番号0以外でDFAが読み込まれたら
+				$("#fileNameSpace1").val(fileName);	// ファイルの名前を表示
+		}else{
 			// ファイル名を表示しない
 			$("#fileNameSpace1").val("");
 		}
@@ -15,10 +16,11 @@ $(function(){
 	// ファイル読み込みボタンが押されたら
 	$("#fileInput2").change(function(){
 		var fileName = $(this).val();	// 読み込みファイル名取得
-		if (fileName.match(/\.dfa\b|\.nfa\b/)) {	// ファイル拡張子が.nfa .dfaだったら
-			// ファイルの名前を表示
-			$("#fileNameSpace2").val(fileName);
-		} else{
+		var radio = getFusionRadio();	// 処理番号
+		if ((radio == 0 && fileName.match(/\.nfa\b/)) // 処理番号0でNFAが読み込まれたら
+			|| (radio != 0 && fileName.match(/\.dfa\b/))) {// 処理番号0以外でDFAが読み込まれたら
+				$("#fileNameSpace2").val(fileName);	// ファイルの名前を表示
+		}else{
 			// ファイル名を表示しない
 			$("#fileNameSpace2").val("");
 		}
