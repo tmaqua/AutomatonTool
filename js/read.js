@@ -10,8 +10,29 @@ $(function(){
 		} else{
 			// ファイル名を表示しない
 			$("#fileNameSpace").val("");
-			// $("#fileInput")[0].files[0] = null;
 		};
+	});
+
+	// 新規作成時にエンターキーが押された場合の処理
+	$("#symbols").keypress(function(e){
+		if (e.which == 13) {
+			newCreateGrid();
+			return false;
+		}
+	});
+	$("#states").keypress(function(e){
+		if (e.which == 13) {
+			newCreateGrid();
+			return false;
+		}
+	});
+
+	// モーダルでファイル名入力中にエンターキーが押されたら保存する
+	$("#inputFileName").keypress(function(e){
+		if (e.which == 13) {
+			writeToLocal(createGraphData());
+			return false;
+		}
 	});
 
 	// 最初は遷移表、遷移図の表示スペースを隠す

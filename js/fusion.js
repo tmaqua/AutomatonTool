@@ -37,6 +37,13 @@ $(function(){
 		downloadData = tempData["Min"];
 	});
 
+	// モーダルでファイル名入力中にエンターキーが押されたら保存する
+	$("#inputFileName").keypress(function(e){
+		if (e.which == 13) {
+			writeToLocal(downloadData);
+			return false;
+		}
+	});
 
 	// 最初は遷移図の表示スペース,DOM"file2"を隠す
 	$("#graphSpace").hide();
