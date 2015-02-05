@@ -204,71 +204,6 @@ function loadGrid () {
 
 
 //**********************************************************************************
-// サポート用関数
-//**********************************************************************************
-
-/**
-splitComma()
-	カンマ , で文字列を区切る
-	str: "a,b,c,_, d" -> ["a", "b", "c", "d"]
-*/
-function splitComma (str) {
-	var pattern = /\s*(?:,|、|，)\s*/; // 正規表現パターン定義
-	var notSymbols = ["", "_"];	// これらは記号として扱わない
-	var notSymbolsLength = notSymbols.length;
-	var symbols = str.split(pattern);	// str をカンマで区切る
-	var symbolsLength = symbols.length;	// 記号の数
-
-	// symbols から notSymbolsを除外
-	for (var i = 0; i < symbolsLength; i++) {
-		for (var j = 0; j < notSymbolsLength; j++) {
-			if (symbols[i] == notSymbols[j]) {
-				symbols.splice(i, 1);
-			}
-		}
-	}
-	// console.log(symbols);
-	return symbols;
-}
-
-/**
-splitString()
-	カンマで文字を区切ったあと{A|B}を{A,B}に変換
-*/
-function splitString(str){
-	var splitPattern = /\s*(?:,)\s*/;
-	var temp = str.replace(/\{(.+?),(.+?)\}/g, "{$1|$2}");
-	// console.log(temp);
-	var splits = temp.split(splitPattern);
-	var result = new Array;
-
-	for (var i = 0; i < splits.length; i++) {
-		result.push(splits[i].replace(/\|/g, ","));
-	}
-
-	return result;
-}
-
-/**
-serchInAttached()
-	記号一覧の中に記号データがあるか
-		attaches : 遷移図に表示させる記号一覧
-		attached : 記号データ
-		ある -> true
-		ない -> false
-*/
-function serchInAttached(attaches, attached){
-	for (var l = 0; l < attaches.length; l++) {
-
-		// array.indexOf(element): arrayの中からelementを探す: あったらindexを返す.なかったら-1
-		if (attaches[l].indexOf(attached) != -1) {// attachesの中に attachedがあったら
-			return true;
-		}
-	}
-	return false;
-}
-
-//**********************************************************************************
 // 状態遷移表用関数
 //**********************************************************************************
 
@@ -616,7 +551,8 @@ function validateForGrid () {
 		var inputDataRows = inputData[i];
 		var inputDataRowsLength = inputDataRows.length;
 		for (var j = 0; j < inputDataRowsLength; j++) {
-			var symbols = splitString(inputDataRows[j]);
+			// var symbols = splitString(inputDataRows[j]);
+			var symbols = getTranslateArray(inputDataRows[j]);
 			if (isDFA) {
 				if (symbols.length == 1 && symbols[0] == "") {
 					var tempObj = {

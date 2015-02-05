@@ -38,6 +38,151 @@ function getProcessStr(num){
     return result;
 }
 
+/**
+getKakkoArray()
+    array: 一文字の配列 ["{", "a", ",", "b", "}"]
+    中括弧で囲まれている文字を見つける
+*/
+function getKakkoArray(array){
+    var scount = 0, ecount = 0, sindex = 0, eindex = 0;
+    var kakkoArray = new Array;
+
+    // 中括弧の "{" と "}" を数えて同じ数になった時、"{"のインデックス と "}"のインデックスの範囲の文字を繋げる
+    for (var i = 0; i < array.length; i++) {
+        if (array[i] == "{") {
+            scount += 1;
+            if (scount == 1) {
+                sindex = i;
+            }
+        }
+        if(array[i] == "}"){
+            ecount += 1;
+            if (ecount == scount) {
+                eindex = i;
+                ecount = 0; // 初期化
+                scount = 0;
+                // 文字を繋げ、繋げた文字を格納
+                kakkoArray.push(strJointToArray(array, sindex, eindex));
+            }
+        }
+    }
+    return kakkoArray;
+}
+
+/**
+strJointToArray()
+    array: 一文字の配列 ["{", "a", ",", "b", "}"]
+    start: 最初の文字のインデックス
+    end: 最後の文字のインデックス
+    startからendまでの文字列を繋げて返す
+*/
+function strJointToArray(array, start, end){
+    var str = "";
+    for (var i = start; i <= end; i++) {
+        str += array[i];
+    }
+    return str;
+}
+
+/**
+getTranslateArray()
+    str: 遷移先を表す文字列
+    strをカンマで分割した文字列の配列を返す
+    中括弧で囲まれた"{a,b}"は分割しない
+*/
+function getTranslateArray(str){
+    var tempStr = str;
+    var splitStr = str.split("");   // strを一文字ごとに分割
+    var kakkoArray = getKakkoArray(splitStr); //中括弧で囲まれているものだけ取り出す 
+    var result = new Array;
+
+    if (kakkoArray.length > 0) {
+        // 中括弧で囲まれているやつだけ格納
+        result = kakkoArray;
+
+        // 元の文字列の中括弧で囲まれている部分を空白に置き換え
+        var replaceKakko = tempStr.replace(kakkoArray[0], "");
+        for (var i = 1; i < kakkoArray.length; i++) {
+            replaceKakko = replaceKakko.replace(kakkoArray[i], "");
+        }
+        
+        // 空白に置き換えてカンマで区切ると中括弧で囲まれている以外の部分が取り出せる
+        var splitReplaceStr = splitComma(replaceKakko);
+        for (var i = 0; i < splitReplaceStr.length; i++) {
+            result.push(splitReplaceStr[i]);
+        }
+    } else{
+        // 中括弧で囲まれているのがなかったらstrをカンマで区切る
+        result = splitComma(str);
+    }
+
+    return result;
+}
+
+/**
+splitComma()
+    カンマ , で文字列を区切る
+    str: "a,b,c,_, d" -> ["a", "b", "c", "d"]
+*/
+function splitComma (str) {
+    var pattern = /\s*(?:,|、|，)\s*/; // 正規表現パターン定義
+    var notSymbols = ["", "_"]; // これらは記号として扱わない
+    var notSymbolsLength = notSymbols.length;
+    var symbols = str.split(pattern);   // str をカンマで区切る
+    var symbolsLength = symbols.length; // 記号の数
+    var result = new Array;
+
+    // symbols から notSymbolsを除外
+    for (var i = 0; i < symbolsLength; i++) {
+        if (symbols[i] == "" || symbols[i] == "_") {
+            continue;
+        }else{
+            result.push(symbols[i]);
+        }
+    }
+    // console.log(result);
+    return result;
+}
+
+
+/**
+splitString()
+    カンマで文字を区切ったあと{A|B}を{A,B}に変換
+*/
+function splitString(str){
+    var splitPattern = /\s*(?:,)\s*/;
+    var temp = str.replace(/\{(.+?),(.+?)\}/g, "{$1|$2}");
+    // console.log(temp);
+    var splits = temp.split(splitPattern);
+    var result = new Array;
+
+    for (var i = 0; i < splits.length; i++) {
+        result.push(splits[i].replace(/\|/g, ","));
+    }
+
+    return result;
+}
+
+/**
+serchInAttached()
+    記号一覧の中に記号データがあるか
+        attaches : 遷移図に表示させる記号一覧
+        attached : 記号データ
+        ある -> true
+        ない -> false
+*/
+function serchInAttached(attaches, attached){
+    for (var l = 0; l < attaches.length; l++) {
+
+        // array.indexOf(element): arrayの中からelementを探す: あったらindexを返す.なかったら-1
+        if (attaches[l].indexOf(attached) != -1) {// attachesの中に attachedがあったら
+            return true;
+        }
+    }
+    return false;
+}
+
+
 //**********************************************************************************
 // データ保存
 //**********************************************************************************
