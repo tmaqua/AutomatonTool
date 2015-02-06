@@ -14,25 +14,39 @@ $(function(){
 	});
 
 	// 新規作成時にエンターキーが押された場合の処理
-	$("#symbols").keypress(function(e){
-		if (e.which == 13) {
+	$("#symbols").keydown(function(e){
+		var pressKey = e.which ? e.which : e.keyCode;
+		if (pressKey == 13) {
 			newCreateGrid();
 			return false;
 		}
 	});
-	$("#states").keypress(function(e){
-		if (e.which == 13) {
+	$("#states").keydown(function(e){
+		var pressKey = e.which ? e.which : e.keyCode;
+		if (pressKey == 13) {
 			newCreateGrid();
 			return false;
 		}
 	});
 
 	// モーダルでファイル名入力中にエンターキーが押されたら保存する
-	$("#inputFileName").keypress(function(e){
-		if (e.which == 13) {
+	$("#inputFileName").keydown(function(e){
+		var pressKey = e.which ? e.which : e.keyCode;
+		if (pressKey == 13) {
 			writeToLocal(createGraphData());
 			return false;
 		}
+	});
+
+	$("#myGrid").keydown(function(e){
+		var pressKey = e.which ? e.which : e.keyCode;
+		if (pressKey == 13) {
+			return false;
+		}
+		// if (pressKey == 8) {
+		// 	// console.log($(":focus"));
+		// 	return false;
+		// }
 	});
 
 	// 最初は遷移表、遷移図の表示スペースを隠す
@@ -312,6 +326,7 @@ function loadGridData(tableObject){
       	gridRow.push("<input type='checkbox' name='endCheck' value="+ states[i] +" checked='checked'>");
 		}
    
+   	// fix
    	// 遷移関数を走査して欄を作っていく
 		for (var j = 3; j < symbolsLength; j++) {
 			var hitLinks = new Array;
@@ -490,6 +505,7 @@ function createGraphData () {
 
 		var attaches = new Array;
 
+		// fix
 		for (var j = 0; j < symbolsLength; j++) {
 			attached = symbols[j];
 			temp = targets[i][j];
