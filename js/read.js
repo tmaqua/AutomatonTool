@@ -38,15 +38,12 @@ $(function(){
 		}
 	});
 
+	// 遷移表選択中にエンターが押されても何もしない
 	$("#myGrid").keydown(function(e){
 		var pressKey = e.which ? e.which : e.keyCode;
 		if (pressKey == 13) {
 			return false;
 		}
-		// if (pressKey == 8) {
-		// 	// console.log($(":focus"));
-		// 	return false;
-		// }
 	});
 
 	// 最初は遷移表、遷移図の表示スペースを隠す
@@ -127,7 +124,9 @@ function newCreateGrid () {
 		});
 
 		// 表を編集可能にする
-		$(".g_BodyStatic").attr("contenteditable", "true");
+		// $(".g_BodyStatic").attr("contenteditable", "true");
+		$(".g_C").attr("contenteditable", "true");
+		addIdToGrid(gridData);
 
 		// ログ表示スペース初期化
 		$("#description").val("");
@@ -186,7 +185,8 @@ function loadGrid () {
 					});
 
 					// 表を編集可能にする
-					$(".g_BodyStatic").attr("contenteditable", "true");
+					// $(".g_BodyStatic").attr("contenteditable", "true");
+					$(".g_C").attr("contenteditable", "true");
 
 					// ログ表示スペース初期化
 					$("#description").val() ;
@@ -220,6 +220,26 @@ function loadGrid () {
 //**********************************************************************************
 // 状態遷移表用関数
 //**********************************************************************************
+
+
+function addIdToGrid(gridData){
+	var row = gridData["Body"].length;
+	var column = gridData["Head"][0].length - 3;
+
+	for (var i = 0; i < row; i++) {
+		for (var j = 0; j < column; j++) {
+			var dom = $("#myGrid").find(".g_BodyStatic").find(".g_Cl"+(i+3)).find(".g_R"+j);
+			dom.attr("id", "cell"+ i + "-" + j);
+		}
+	}
+}
+
+
+
+
+
+
+
 
 /**
 createGridData()

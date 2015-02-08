@@ -41,7 +41,8 @@ $(function(){
 
 	// モーダルでファイル名入力中にエンターキーが押されたら保存する
 	$("#inputFileName").keypress(function(e){
-		if (e.which == 13) {
+		var pressKey = e.which ? e.which : e.keyCode;
+		if (pressKey == 13) {
 			writeToLocal(downloadData);
 			return false;
 		}
