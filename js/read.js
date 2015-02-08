@@ -170,6 +170,7 @@ function loadGrid () {
 
 					// 状態遷移表データ作成
 					var gridData = loadGridData(transFormatData);
+					console.log(gridData);
 					new Grid("myGrid", {
 						srcType : "json", 
 						srcData : gridData, 
@@ -325,26 +326,51 @@ function loadGridData(tableObject){
       	gridRow.push("<input type='checkbox' name='endCheck' value="+ states[i] +" checked='checked'>");
 		}
    
-   	// fix
    	// 遷移関数を走査して欄を作っていく
-		for (var j = 3; j < symbolsLength; j++) {
-			var hitLinks = new Array;
-			for (var k = 0; k < linksLength; k++) {
-				if (states[i] == links[k]["source"] 
-					&& $.inArray(symbols[j], splitComma(links[k]["attached"])) > -1) {
-						hitLinks.push(links[k]["target"]);
-				}
-			}
+   	var gridCell = new Array;
+   	var hitLinks;
 
-			// hitLinks: 状態states[i]から遷移する記号一覧
-			if (hitLinks.length == 0) {// 0なら空白
-				gridRow.push("");
-			} else{
-				for (var l = 0; l < hitLinks.length; l++) {
-					gridRow.push(hitLinks[l]);
-				}
-			}
-		}
+   	for(var j = 3; j < symbolsLength; j++){
+
+   		hitLinks = "";
+   		// linksの中からsourceがstate[i]でtargetがsymbols[j]になっているものを探す
+   		for (var k = 0; k < linksLength; k++) {
+   			// attachedはカンマで区切る
+   			var attachedArray = splitComma(links[k]["attached"]);
+   			for (var l = 0; l < attachedArray.length; l++) {
+   				if (states[i] == links[k]["source"] && attachedArray[l] == symbols[j]) {
+   					hitLinks += links[k]["target"] + ",";
+   				}
+   			}
+   		}
+   		// hitLinksが空じゃなかったら最後のカンマを消す
+   		if (hitLinks != "") {
+   			hitLinks = hitLinks.slice(0, -1);
+   		}
+   		// cell一個分完成
+   		gridCell.push(hitLinks);
+   	}
+   	// 表の一列完成
+   	gridRow = $.merge(gridRow, gridCell);
+
+		// for (var j = 3; j < symbolsLength; j++) {
+		// 	var hitLinks = new Array;
+		// 	for (var k = 0; k < linksLength; k++) {
+		// 		if (states[i] == links[k]["source"] 
+		// 			&& $.inArray(symbols[j], splitComma(links[k]["attached"])) > -1) {
+		// 				hitLinks.push(links[k]["target"]);
+		// 		}
+		// 	}
+
+		// 	// hitLinks: 状態states[i]から遷移する記号一覧
+		// 	if (hitLinks.length == 0) {// 0なら空白
+		// 		gridRow.push("");
+		// 	} else{
+		// 		for (var l = 0; l < hitLinks.length; l++) {
+		// 			gridRow.push(hitLinks[l]);
+		// 		}
+		// 	}
+		// }
 		body.push(gridRow);
 	}
 
