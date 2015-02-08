@@ -126,7 +126,6 @@ function newCreateGrid () {
 		// 表を編集可能にする
 		// $(".g_BodyStatic").attr("contenteditable", "true");
 		$(".g_C").attr("contenteditable", "true");
-		addIdToGrid(gridData);
 
 		// ログ表示スペース初期化
 		$("#description").val("");
@@ -220,26 +219,6 @@ function loadGrid () {
 //**********************************************************************************
 // 状態遷移表用関数
 //**********************************************************************************
-
-
-function addIdToGrid(gridData){
-	var row = gridData["Body"].length;
-	var column = gridData["Head"][0].length - 3;
-
-	for (var i = 0; i < row; i++) {
-		for (var j = 0; j < column; j++) {
-			var dom = $("#myGrid").find(".g_BodyStatic").find(".g_Cl"+(i+3)).find(".g_R"+j);
-			dom.attr("id", "cell"+ i + "-" + j);
-		}
-	}
-}
-
-
-
-
-
-
-
 
 /**
 createGridData()
@@ -520,31 +499,52 @@ function createGraphData () {
 
 	var isDFA = getDFARadio();	// DFA(true) or NFA(false)
 
-	var temp, attached;
-	for (var i=0; i<statesLength; i++) {
-
-		var attaches = new Array;
-
-		// fix
-		for (var j = 0; j < symbolsLength; j++) {
-			attached = symbols[j];
-			temp = targets[i][j];
-			var tempObj = new Object;
-			if (temp != "") {
-				for (var k = j+1; k < symbolsLength; k++) {
-					if (temp == targets[i][k]) {
-						attached += "," + symbols[k];
-					}
-				}
-				if (serchInAttached(attaches, attached)) {continue;}
-				attaches.push(attached);
-				tempObj["source"] = states[i];
-				tempObj["target"] = targets[i][j];
-				tempObj["attached"] = attached;
-				links.push(tempObj);
+	for(var i = 0; i < statesLength; i++){
+		var tempLinks = new Array;
+		for(var j = 0; j < symbolsLength; j++){
+			var source = states[i];
+			var attached = symbols[j];
+			// 遷移関数をカンマで分解
+			var targetArray = getTranslateArray(targets[i][j]);
+			for (var k = 0; k < targetArray.length; k++) {
+				var linkObj = new Object;
+				linkObj["source"] = states[i];
+				linkObj["target"] = targetArray[k];
+				linkObj["attached"] = attached;
+				tempLinks.push(linkObj);
 			}
 		}
+		// 出来たlinksの遷移先が被っているものをまとめる
+		var linksOfRow = gatherManyLinks(tempLinks);
+		// 配列をマージする
+		links = $.merge(links, linksOfRow);
 	}
+
+	// var temp, attached;
+	// for (var i=0; i<statesLength; i++) {
+
+	// 	var attaches = new Array;
+
+	// 	// fix
+	// 	for (var j = 0; j < symbolsLength; j++) {
+	// 		attached = symbols[j];
+	// 		temp = targets[i][j];
+	// 		var tempObj = new Object;
+	// 		if (temp != "") {
+	// 			for (var k = j+1; k < symbolsLength; k++) {
+	// 				if (temp == targets[i][k]) {
+	// 					attached += "," + symbols[k];
+	// 				}
+	// 			}
+	// 			if (serchInAttached(attaches, attached)) {continue;}
+	// 			attaches.push(attached);
+	// 			tempObj["source"] = states[i];
+	// 			tempObj["target"] = targets[i][j];
+	// 			tempObj["attached"] = attached;
+	// 			links.push(tempObj);
+	// 		}
+	// 	}
+	// }
 	graphData["links"] = links;
 	graphData["states"] = states;
 	graphData["startState"] = getStartStateCheck();
@@ -552,9 +552,45 @@ function createGraphData () {
 	graphData["symbols"] = symbols;
 	graphData["isDFA"] = isDFA;
 
-	// console.log(graphData);
+	console.log(graphData);
 	return graphData;
 }
+
+/**
+gatherManyLinks()
+	linkArray: source,target,attachedが設定されたlinkオブジェクトの配列
+	linkArrayの遷移先targetが被っているやつのattachedを一つにまとめる
+*/
+function gatherManyLinks(linkArray){
+	var result = new Array;
+	var len = linkArray.length;
+
+	for (var i = 0; i < len; i++) {
+		var linkObj = new Object;
+		var toOne = linkArray[i]["attached"];
+
+		// 調べる対象が"forgot"になっていたらスキップ
+		if (toOne == "forgot") {continue;}
+		// 一度調べたものは"forgot"にして次は調べない
+		linkArray[i]["attached"] = "forgot";
+
+		for(var j = i+1; j < len; j++) {
+			if (linkArray[i]["target"] == linkArray[j]["target"]) {
+				toOne += "," + linkArray[j]["attached"];
+				// 一度調べたものは"forgot"にして次は調べない
+				linkArray[j]["attached"] = "forgot";
+			}
+		}
+		linkObj["source"] = linkArray[i]["source"];
+		linkObj["target"] = linkArray[i]["target"];
+		linkObj["attached"] = toOne;
+		result.push(linkObj);
+	}
+	return result;
+}
+
+
+
 
 /**
 validateForGrid()
@@ -739,6 +775,8 @@ function showGraph(){
 		// 前回の遷移図を削除
 		$("#paper").empty();
 
+		// alert("a");
+
 		var graphData = createGraphData();
 		var graph = new joint.dia.Graph;
 		graph.on('change:position', function(cell) {
@@ -775,6 +813,11 @@ function showGraph(){
       $('body,html').animate({scrollTop:position}, speed, 'swing');
 	}else{
 		alert("作成に失敗しました.\nログを確認して下さい.");
+
+		// 前回の遷移図を削除
+		$("#paper").empty();
+
+		$("#graphSpace").hide();
 		return;
 	}
 }
