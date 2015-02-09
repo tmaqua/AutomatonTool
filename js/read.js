@@ -50,7 +50,39 @@ $(function(){
 	$("#gridSpace").hide();
 	$("#graphSpace").hide();
 
+	// 遷移表用の変数を宣言しておく(他関数から参照することになるのでグローバルに置いておく)
+	graph = new joint.dia.Graph;
+
+		// 二重丸の内側の丸が外に出ないようにする
+		graph.on('change:position', function(cell) {
+			var parentId = cell.get('parent');
+			if (!parentId) return;
+
+			var parent = graph.getCell(parentId);
+			var parentBbox = parent.getBBox();
+			var cellBbox = cell.getBBox();
+
+			if (parentBbox.containsPoint(cellBbox.origin()) &&
+				parentBbox.containsPoint(cellBbox.topRight()) &&
+				parentBbox.containsPoint(cellBbox.corner()) &&
+				parentBbox.containsPoint(cellBbox.bottomLeft())) {
+				return;
+			}
+			cell.set('position', cell.previous('position'));
+		});
+
+	// 遷移表表示スペースをnewする
+	paper = new joint.dia.Paper({
+		el: $("#paper"),
+		width: 800,
+		height: 600,
+		gridSize: 1,
+		model: graph
+	});
+
 });
+var graph, paper;
+
 
 //**********************************************************************************
 // 入力・読み込み用関数
@@ -106,7 +138,7 @@ function newCreateGrid () {
 		
 		// 前回の遷移表,遷移図を削除
 		$("#myGrid").empty();
-		$("#paper").empty();
+		// $("#paper").empty();
 
 		// 状態遷移表データ作成
 		var gridData = createGridData(symbols, inputStateNum);
@@ -167,7 +199,7 @@ function loadGrid () {
 
 					// 前回の遷移表,遷移図を削除
 					$("#myGrid").empty();
-					$("#paper").empty();
+					// $("#paper").empty();
 
 					// 状態遷移表データ作成
 					var gridData = loadGridData(transFormatData);
@@ -580,7 +612,7 @@ function createGraphData () {
 	graphData["symbols"] = symbols;
 	graphData["isDFA"] = isDFA;
 
-	console.log(graphData);
+	// console.log(graphData);
 	return graphData;
 }
 
@@ -784,10 +816,10 @@ function checkFileFormat(fileData){
 		&& "finishState" in fileData
 		&& "symbols" in fileData
 		&& "isDFA" in fileData) {
-		console.log("valid data");
+		// console.log("valid data");
 		return true;
 	} else{
-		console.log("invalid data");
+		// console.log("invalid data");
 		return false;
 	}
 
@@ -805,35 +837,36 @@ function showGraph(){
 		$("#graphSpace").show(100);
 
 		// 前回の遷移図を削除
-		$("#paper").empty();
-		// alert("stop");
+		// $("#paper").empty();
+		graph.clear();
 
 		var graphData = createGraphData();
-		var graph = new joint.dia.Graph;
-		graph.on('change:position', function(cell) {
-			var parentId = cell.get('parent');
-			if (!parentId) return;
+		// var graph = new joint.dia.Graph;
+		// graph.on('change:position', function(cell) {
+		// 	var parentId = cell.get('parent');
+		// 	if (!parentId) return;
 
-			var parent = graph.getCell(parentId);
-			var parentBbox = parent.getBBox();
-			var cellBbox = cell.getBBox();
+		// 	var parent = graph.getCell(parentId);
+		// 	var parentBbox = parent.getBBox();
+		// 	var cellBbox = cell.getBBox();
 
-			if (parentBbox.containsPoint(cellBbox.origin()) &&
-				parentBbox.containsPoint(cellBbox.topRight()) &&
-				parentBbox.containsPoint(cellBbox.corner()) &&
-				parentBbox.containsPoint(cellBbox.bottomLeft())) {
-				return;
-			}
-			cell.set('position', cell.previous('position'));
-		});
+		// 	if (parentBbox.containsPoint(cellBbox.origin()) &&
+		// 		parentBbox.containsPoint(cellBbox.topRight()) &&
+		// 		parentBbox.containsPoint(cellBbox.corner()) &&
+		// 		parentBbox.containsPoint(cellBbox.bottomLeft())) {
+		// 		return;
+		// 	}
+		// 	cell.set('position', cell.previous('position'));
+		// });
 
-		var paper = new joint.dia.Paper({
-			el: $('#paper'),
-			width: 800,
-			height: 600,
-			gridSize: 1,
-			model: graph
-		});
+		// var paper = new joint.dia.Paper({
+		// 	el: $('#paper'),
+		// 	width: 800,
+		// 	height: 600,
+		// 	gridSize: 1,
+		// 	model: graph
+		// });
+
 
 		createState(graphData, graph);
 
@@ -846,13 +879,11 @@ function showGraph(){
 		alert("作成に失敗しました.\nログを確認して下さい.");
 
 		// 前回の遷移図を削除
-		$("#paper").empty();
+		// $("#paper").empty();
+		graph.clear();
 
 		$("#graphSpace").hide();
 		return;
 	}
 }
-
-
-
 
