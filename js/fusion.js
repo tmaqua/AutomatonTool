@@ -55,10 +55,16 @@ $(function(){
 	// チェックボックスのデフォルト設定
 	setCheckBox();
 
+	// 遷移表表示領域初期化
+	initGraphSpace();
+
 });
 
 // ダウンロード用のグラフデータ
 var downloadData,tempData;
+// 遷移表表示用データ
+var graph_src1, graph_src2, graph_nfa, graph_dfa, graph_min;
+var paper_src1, paper_src2, paper_nfa, paper_dfa, paper_min;
 
 //*----------------------------------------------------------------
 //* DOMの値取得、編集系
@@ -395,6 +401,144 @@ function fusionRequest(){
 //*----------------------------------------------------------------
 
 /**
+initGraphSpace()
+	遷移表表示領域を作成
+	表示領域はグローバル
+*/
+function initGraphSpace(){
+
+	graph_src1 = new joint.dia.Graph;
+	graph_src1.on('change:position', function(cell) {
+		var parentId = cell.get('parent');
+		if (!parentId) return;
+
+		var parent = graph_src1.getCell(parentId);
+		var parentBbox = parent.getBBox();
+		var cellBbox = cell.getBBox();
+
+		if (parentBbox.containsPoint(cellBbox.origin()) &&
+			parentBbox.containsPoint(cellBbox.topRight()) &&
+			parentBbox.containsPoint(cellBbox.corner()) &&
+			parentBbox.containsPoint(cellBbox.bottomLeft())) {
+			return;
+		}
+		cell.set('position', cell.previous('position'));
+	});
+
+	graph_src2 = new joint.dia.Graph;
+	graph_src2.on('change:position', function(cell) {
+		var parentId = cell.get('parent');
+		if (!parentId) return;
+
+		var parent = graph_src2.getCell(parentId);
+		var parentBbox = parent.getBBox();
+		var cellBbox = cell.getBBox();
+
+		if (parentBbox.containsPoint(cellBbox.origin()) &&
+			parentBbox.containsPoint(cellBbox.topRight()) &&
+			parentBbox.containsPoint(cellBbox.corner()) &&
+			parentBbox.containsPoint(cellBbox.bottomLeft())) {
+			return;
+		}
+		cell.set('position', cell.previous('position'));
+	});
+
+	graph_nfa = new joint.dia.Graph;
+	graph_nfa.on('change:position', function(cell) {
+		var parentId = cell.get('parent');
+		if (!parentId) return;
+
+		var parent = graph_nfa.getCell(parentId);
+		var parentBbox = parent.getBBox();
+		var cellBbox = cell.getBBox();
+
+		if (parentBbox.containsPoint(cellBbox.origin()) &&
+			parentBbox.containsPoint(cellBbox.topRight()) &&
+			parentBbox.containsPoint(cellBbox.corner()) &&
+			parentBbox.containsPoint(cellBbox.bottomLeft())) {
+			return;
+		}
+		cell.set('position', cell.previous('position'));
+	});
+
+	graph_dfa = new joint.dia.Graph;
+	graph_dfa.on('change:position', function(cell) {
+		var parentId = cell.get('parent');
+		if (!parentId) return;
+
+		var parent = graph_dfa.getCell(parentId);
+		var parentBbox = parent.getBBox();
+		var cellBbox = cell.getBBox();
+
+		if (parentBbox.containsPoint(cellBbox.origin()) &&
+			parentBbox.containsPoint(cellBbox.topRight()) &&
+			parentBbox.containsPoint(cellBbox.corner()) &&
+			parentBbox.containsPoint(cellBbox.bottomLeft())) {
+			return;
+		}
+		cell.set('position', cell.previous('position'));
+	});
+
+	graph_min = new joint.dia.Graph;
+	graph_min.on('change:position', function(cell) {
+		var parentId = cell.get('parent');
+		if (!parentId) return;
+
+		var parent = graph_min.getCell(parentId);
+		var parentBbox = parent.getBBox();
+		var cellBbox = cell.getBBox();
+
+		if (parentBbox.containsPoint(cellBbox.origin()) &&
+			parentBbox.containsPoint(cellBbox.topRight()) &&
+			parentBbox.containsPoint(cellBbox.corner()) &&
+			parentBbox.containsPoint(cellBbox.bottomLeft())) {
+			return;
+		}
+		cell.set('position', cell.previous('position'));
+	});
+
+	paper_src1 = new joint.dia.Paper({
+		el: $("#graphSpace_src1"),
+		width: 500,
+		height: 500,
+		gridSize: 1,
+		model: graph_src1
+	});
+
+	paper_src2 = new joint.dia.Paper({
+		el: $("#graphSpace_src2"),
+		width: 500,
+		height: 500,
+		gridSize: 1,
+		model: graph_src2
+	});
+
+	paper_nfa = new joint.dia.Paper({
+		el: $("#graphSpace_NFA1"),
+		width: 500,
+		height: 500,
+		gridSize: 1,
+		model: graph_nfa
+	});
+
+	paper_dfa = new joint.dia.Paper({
+		el: $("#graphSpace_DFA1"),
+		width: 500,
+		height: 500,
+		gridSize: 1,
+		model: graph_dfa
+	});
+
+	paper_min = new joint.dia.Paper({
+		el: $("#graphSpace_Min1"),
+		width: 500,
+		height: 500,
+		gridSize: 1,
+		model: graph_min
+	});
+}
+
+/**
 createGraph()
 	遷移図を作成・表示
 	graphData: サーバからのレスポンスデータ
@@ -418,7 +562,7 @@ function createGraph(graphData){
 	$("#graphSpace_Min").hide();
 
 	// 表示スペース初期化
-	initGraphSpace();
+	clearGraphSpace();
 
 	// 表示スペースの見出しを変更
 	$("#graphSpace_NFA_header").text("出力結果:"+ radioStr +"(NFA)");
@@ -467,15 +611,15 @@ function createGraph(graphData){
 }
 
 /**
-initGraphSpace()
-	遷移図表示スペースを初期化
+clearGraphSpace()
+	遷移図表示スペースをクリア
 */
-function initGraphSpace(){
-	$("#graphSpace_src1").empty();
-	$("#graphSpace_src2").empty();
-	$("#graphSpace_NFA1").empty();
-	$("#graphSpace_DFA1").empty();
-	$("#graphSpace_Min1").empty();
+function clearGraphSpace(){
+	graph_src1.clear();
+	graph_src2.clear();
+	graph_nfa.clear();
+	graph_dfa.clear();
+	graph_min.clear();
 }
 
 /**
@@ -485,32 +629,23 @@ createGraphData()
 	data: 作成する遷移図データ
 */
 function createGraphData(space, data){
-	var graph = new joint.dia.Graph;
-	graph.on('change:position', function(cell) {
-		var parentId = cell.get('parent');
-		if (!parentId) return;
-
-		var parent = graph.getCell(parentId);
-		var parentBbox = parent.getBBox();
-		var cellBbox = cell.getBBox();
-
-		if (parentBbox.containsPoint(cellBbox.origin()) &&
-			parentBbox.containsPoint(cellBbox.topRight()) &&
-			parentBbox.containsPoint(cellBbox.corner()) &&
-			parentBbox.containsPoint(cellBbox.bottomLeft())) {
-			return;
-		}
-		cell.set('position', cell.previous('position'));
-	});
-
-	var paper = new joint.dia.Paper({
-		el: $(space),
-		width: 500,
-		height: 500,
-		gridSize: 1,
-		model: graph
-	});
-
-	createState(transDataFormat(data), graph);
+	switch(space){
+		case "#graphSpace_src1":
+			createState(transDataFormat(data), graph_src1);
+			break;
+		case "#graphSpace_src2":
+			createState(transDataFormat(data), graph_src2);
+			break;
+		case "#graphSpace_NFA1":
+			createState(transDataFormat(data), graph_nfa);
+			break;
+		case "#graphSpace_DFA1":
+			createState(transDataFormat(data), graph_dfa);
+			break;
+		case "#graphSpace_Min1":
+			createState(transDataFormat(data), graph_min);
+			break;
+	}
+	return false;
 }
 

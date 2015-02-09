@@ -138,6 +138,7 @@ function newCreateGrid () {
 		
 		// 前回の遷移表,遷移図を削除
 		$("#myGrid").empty();
+		graph.clear();
 		// $("#paper").empty();
 
 		// 状態遷移表データ作成
@@ -199,6 +200,7 @@ function loadGrid () {
 
 					// 前回の遷移表,遷移図を削除
 					$("#myGrid").empty();
+					graph.clear();
 					// $("#paper").empty();
 
 					// 状態遷移表データ作成
