@@ -125,7 +125,8 @@ function newCreateGrid () {
 
 		// 表を編集可能にする
 		// $(".g_BodyStatic").attr("contenteditable", "true");
-		$(".g_C").attr("contenteditable", "true");
+		// $(".g_C").attr("contenteditable", "true");
+		$("#myGrid").find(".g_BodyStatic").find(".g_C").attr("contenteditable", "true");
 
 		// ログ表示スペース初期化
 		$("#description").val("");
@@ -170,7 +171,7 @@ function loadGrid () {
 
 					// 状態遷移表データ作成
 					var gridData = loadGridData(transFormatData);
-					console.log(gridData);
+					// console.log(gridData);
 					new Grid("myGrid", {
 						srcType : "json", 
 						srcData : gridData, 
@@ -186,10 +187,11 @@ function loadGrid () {
 
 					// 表を編集可能にする
 					// $(".g_BodyStatic").attr("contenteditable", "true");
-					$(".g_C").attr("contenteditable", "true");
+					// $(".g_C").attr("contenteditable", "true");
+					$("#myGrid").find(".g_BodyStatic").find(".g_C").attr("contenteditable", "true");
 
 					// ログ表示スペース初期化
-					$("#description").val() ;
+					$("#description").val("") ;
 
 				} else{// 通らなかったらアラート
 					alert("ファイルの形式が間違っている可能性があります");
@@ -760,6 +762,10 @@ function printError(resultArray){
 	}
 
 	textArea.val(str);
+
+	textArea.scrollTop(
+		textArea[0].scrollHeight - textArea.height()
+   );
 }
 
 //**********************************************************************************
@@ -800,8 +806,7 @@ function showGraph(){
 
 		// 前回の遷移図を削除
 		$("#paper").empty();
-
-		// alert("a");
+		// alert("stop");
 
 		var graphData = createGraphData();
 		var graph = new joint.dia.Graph;
