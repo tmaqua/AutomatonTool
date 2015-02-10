@@ -234,9 +234,9 @@ function fusionRequest(){
 								var graphData = new Object;
 								graphData["srcData1"] = file1Data;
 								graphData["srcData2"] = null;
-								graphData["DFA"] = response["responseData"]["dfa"];
-								graphData["NFA"] = response["responseData"]["nfa"];
-								graphData["Min"] = response["responseData"]["minDFA"];
+								graphData["DFA"] = convertGatherLink(response["responseData"]["dfa"]);
+								graphData["NFA"] = convertGatherLink(response["responseData"]["nfa"]);
+								graphData["Min"] = convertGatherLink(response["responseData"]["minDFA"]);
 
 								// 遷移図作成
 								createGraph(graphData);
@@ -331,9 +331,9 @@ function fusionRequest(){
 									var graphData = new Object;
 									graphData["srcData1"] = file1Data;
 									graphData["srcData2"] = file2Data;
-									graphData["DFA"] = response["responseData"]["dfa"];
-									graphData["NFA"] = response["responseData"]["nfa"];
-									graphData["Min"] = response["responseData"]["minDFA"];
+									graphData["DFA"] = convertGatherLink(response["responseData"]["dfa"]);
+									graphData["NFA"] = convertGatherLink(response["responseData"]["nfa"]);
+									graphData["Min"] = convertGatherLink(response["responseData"]["minDFA"]);
 
 									// 遷移図作成
 									createGraph(graphData);

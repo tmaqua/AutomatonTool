@@ -343,6 +343,56 @@ function replaceJavaToJson(str){
     return temp3;
 }
 
+/**
+gatherManyLinks()
+    linkArray: source,target,attachedが設定されたlinkオブジェクトの配列
+    linkArrayの遷移先targetが被っているやつのattachedを一つにまとめる
+*/
+function gatherManyLinks(linkArray){
+    var result = new Array;
+    var len = linkArray.length;
+
+    for (var i = 0; i < len; i++) {
+        var linkObj = new Object;
+        var toOne = linkArray[i]["attached"];
+
+        // 調べる対象が"forgot"になっていたらスキップ
+        if (toOne == "forgot") {continue;}
+        // 一度調べたものは"forgot"にして次は調べない
+        linkArray[i]["attached"] = "forgot";
+
+        for(var j = i+1; j < len; j++) {
+            if (linkArray[i]["target"] == linkArray[j]["target"]) {
+                toOne += "," + linkArray[j]["attached"];
+                // 一度調べたものは"forgot"にして次は調べない
+                linkArray[j]["attached"] = "forgot";
+            }
+        }
+        linkObj["source"] = linkArray[i]["source"];
+        linkObj["target"] = linkArray[i]["target"];
+        linkObj["attached"] = toOne;
+        result.push(linkObj);
+    }
+    return result;
+}
+
+/**
+convertGatherLink()
+    合成処理結果のオートマトンのlinksをまとめる
+*/
+function convertGatherLink(graphData){
+    var newData = new Object;
+    newData["links"] = gatherManyLinks(graphData["links"]);
+
+    newData["states"] = graphData["states"];
+    newData["startState"] = graphData["startState"];
+    newData["finishState"] = graphData["finishState"];
+    newData["symbols"] = graphData["symbols"];
+    newData["isDFA"] = graphData["isDFA"];
+
+    return newData;
+}
+
 //*----------------------------------------------------------------
 //* 遷移図svg作成
 //*----------------------------------------------------------------

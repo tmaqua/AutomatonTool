@@ -617,41 +617,6 @@ function createGraphData () {
 	return graphData;
 }
 
-/**
-gatherManyLinks()
-	linkArray: source,target,attachedが設定されたlinkオブジェクトの配列
-	linkArrayの遷移先targetが被っているやつのattachedを一つにまとめる
-*/
-function gatherManyLinks(linkArray){
-	var result = new Array;
-	var len = linkArray.length;
-
-	for (var i = 0; i < len; i++) {
-		var linkObj = new Object;
-		var toOne = linkArray[i]["attached"];
-
-		// 調べる対象が"forgot"になっていたらスキップ
-		if (toOne == "forgot") {continue;}
-		// 一度調べたものは"forgot"にして次は調べない
-		linkArray[i]["attached"] = "forgot";
-
-		for(var j = i+1; j < len; j++) {
-			if (linkArray[i]["target"] == linkArray[j]["target"]) {
-				toOne += "," + linkArray[j]["attached"];
-				// 一度調べたものは"forgot"にして次は調べない
-				linkArray[j]["attached"] = "forgot";
-			}
-		}
-		linkObj["source"] = linkArray[i]["source"];
-		linkObj["target"] = linkArray[i]["target"];
-		linkObj["attached"] = toOne;
-		result.push(linkObj);
-	}
-	return result;
-}
-
-
-
 
 /**
 validateForGrid()
