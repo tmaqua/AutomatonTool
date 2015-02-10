@@ -234,9 +234,22 @@ function fusionRequest(){
 								var graphData = new Object;
 								graphData["srcData1"] = file1Data;
 								graphData["srcData2"] = null;
-								graphData["DFA"] = convertGatherLink(response["responseData"]["dfa"]);
-								graphData["NFA"] = convertGatherLink(response["responseData"]["nfa"]);
-								graphData["Min"] = convertGatherLink(response["responseData"]["minDFA"]);
+								
+								if (response["responseData"]["dfa"] == null) {
+									graphData["DFA"] = null;
+								} else{
+									graphData["DFA"] = convertGatherLink(response["responseData"]["dfa"]);
+								}
+								if (response["responseData"]["nfa"] == null) {
+									graphData["NFA"] = null;
+								} else{
+									graphData["NFA"] = convertGatherLink(response["responseData"]["nfa"]);
+								}
+								if (response["responseData"]["minDFA"] == null) {
+									graphData["Min"] = null;
+								} else{
+									graphData["Min"] = convertGatherLink(response["responseData"]["minDFA"]);
+								}
 
 								// 遷移図作成
 								createGraph(graphData);
@@ -331,9 +344,23 @@ function fusionRequest(){
 									var graphData = new Object;
 									graphData["srcData1"] = file1Data;
 									graphData["srcData2"] = file2Data;
-									graphData["DFA"] = convertGatherLink(response["responseData"]["dfa"]);
-									graphData["NFA"] = convertGatherLink(response["responseData"]["nfa"]);
-									graphData["Min"] = convertGatherLink(response["responseData"]["minDFA"]);
+
+									if (response["responseData"]["dfa"] == null) {
+										graphData["DFA"] = null;
+									} else{
+										graphData["DFA"] = convertGatherLink(response["responseData"]["dfa"]);
+									}
+									if (response["responseData"]["nfa"] == null) {
+										graphData["NFA"] = null;
+									} else{
+										graphData["NFA"] = convertGatherLink(response["responseData"]["nfa"]);
+									}
+									if (response["responseData"]["minDFA"] == null) {
+										graphData["Min"] = null;
+									} else{
+										graphData["Min"] = convertGatherLink(response["responseData"]["minDFA"]);
+									}
+									
 
 									// 遷移図作成
 									createGraph(graphData);
