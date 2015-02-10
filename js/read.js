@@ -139,11 +139,10 @@ function newCreateGrid () {
 		// 前回の遷移表,遷移図を削除
 		$("#myGrid").empty();
 		graph.clear();
-		// $("#paper").empty();
 
 		// 状態遷移表データ作成
 		var gridData = createGridData(symbols, inputStateNum);
-		new Grid("myGrid", {
+		console.log(new Grid("myGrid", {
 			srcType : "json", 
 			srcData : gridData, 
 			allowGridResize : true, 
@@ -154,7 +153,7 @@ function newCreateGrid () {
 			showSelectionColumn : true,
 			colBGColors : ["#F5F5F5"],
 			fixedCols : 3
-		});
+		}));
 
 		// 表を編集可能にする
 		// $(".g_BodyStatic").attr("contenteditable", "true");
@@ -207,7 +206,7 @@ function loadGrid () {
 					var gridData = loadGridData(transFormatData);
 					// console.log(gridData);
 					new Grid("myGrid", {
-						srcType : "json", 
+						srcType : "json",
 						srcData : gridData, 
 						allowGridResize : true, 
 						allowColumnResize : true, 

@@ -246,28 +246,28 @@ function fusionRequest(){
 
 								// テスト用コード
 								// 遷移図作成用データ
-								var testData = {
-									"links": [
-										{"source": "[0|0']", "target": "1", "attached": "a"},
-										{"source": "[0|0']", "target": "[0|0']", "attached": "b"},
-										{"source": "1", "target": "[0|0']", "attached": "b"},
-										{"source": "1", "target": "1", "attached": "a"}
-									],
-									"states": ["[0|0']", "1"],
-									"startState": ["[0|0']"],
-									"finishState": ["1"],
-									"symbols": ["a", "b"],
-									"isDFA": true
-								};
-								var graphData = new Object;
-								graphData["srcData1"] = file1Data;
-								graphData["srcData2"] = null;
-								graphData["DFA"] = testData;
-								graphData["NFA"] = testData;
-								graphData["Min"] = testData;
+								// var testData = {
+								// 	"links": [
+								// 		{"source": "[0|0']", "target": "1", "attached": "a"},
+								// 		{"source": "[0|0']", "target": "[0|0']", "attached": "b"},
+								// 		{"source": "1", "target": "[0|0']", "attached": "b"},
+								// 		{"source": "1", "target": "1", "attached": "a"}
+								// 	],
+								// 	"states": ["[0|0']", "1"],
+								// 	"startState": ["[0|0']"],
+								// 	"finishState": ["1"],
+								// 	"symbols": ["a", "b"],
+								// 	"isDFA": true
+								// };
+								// var graphData = new Object;
+								// graphData["srcData1"] = file1Data;
+								// graphData["srcData2"] = null;
+								// graphData["DFA"] = testData;
+								// graphData["NFA"] = testData;
+								// graphData["Min"] = testData;
 
-								// 遷移図作成
-								createGraph(graphData);
+								// // 遷移図作成
+								// createGraph(graphData);
 							},
 							complete: function() {// 完了処理(必ず実行)
 								console.log("*** complete ***");
@@ -342,30 +342,30 @@ function fusionRequest(){
 								error: function() {// エラー処理
 									alert("サーバ側でエラーが発生しました.\n時間をおいて再度試してください.");
 
-									// testData
-									var testData = {
-										"links": [
-											{"source": "[0|0'|z]", "target": "1", "attached": "a"},
-											{"source": "[0|0'|z]", "target": "[0|0'|z]", "attached": "b"},
-											{"source": "1", "target": "[0|0'|z]", "attached": "b"},
-											{"source": "1", "target": "1", "attached": "a"}
-										],
-										"states": ["[0|0'|z]", "1"],
-										"startState": ["[0|0'|z]"],
-										"finishState": ["1"],
-										"symbols": ["a", "b"],
-										"isDFA": true
-									};
-									// 遷移図作成用データ
-									var graphData = new Object;
-									graphData["srcData1"] = file1Data;
-									graphData["srcData2"] = file2Data;
-									graphData["DFA"] = testData;
-									graphData["NFA"] = testData;
-									graphData["Min"] = testData;
+									// // testData
+									// var testData = {
+									// 	"links": [
+									// 		{"source": "[0|0'|z]", "target": "1", "attached": "a"},
+									// 		{"source": "[0|0'|z]", "target": "[0|0'|z]", "attached": "b"},
+									// 		{"source": "1", "target": "[0|0'|z]", "attached": "b"},
+									// 		{"source": "1", "target": "1", "attached": "a"}
+									// 	],
+									// 	"states": ["[0|0'|z]", "1"],
+									// 	"startState": ["[0|0'|z]"],
+									// 	"finishState": ["1"],
+									// 	"symbols": ["a", "b"],
+									// 	"isDFA": true
+									// };
+									// // 遷移図作成用データ
+									// var graphData = new Object;
+									// graphData["srcData1"] = file1Data;
+									// graphData["srcData2"] = file2Data;
+									// graphData["DFA"] = testData;
+									// graphData["NFA"] = testData;
+									// graphData["Min"] = testData;
 
-									// 遷移図作成
-									createGraph(graphData);
+									// // 遷移図作成
+									// createGraph(graphData);
 								},
 								complete: function() {// 完了処理(必ず実行)
 									console.log("*** complete ***");
