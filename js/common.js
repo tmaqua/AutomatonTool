@@ -349,6 +349,7 @@ gatherManyLinks()
     linkArrayの遷移先targetが被っているやつのattachedを一つにまとめる
 */
 function gatherManyLinks(linkArray){
+    console.log(linkArray);
     var result = new Array;
     var len = linkArray.length;
 
@@ -362,7 +363,9 @@ function gatherManyLinks(linkArray){
         linkArray[i]["attached"] = "forgot";
 
         for(var j = i+1; j < len; j++) {
-            if (linkArray[i]["target"] == linkArray[j]["target"]) {
+            // source と target が一緒のやつをまとめる
+            if (linkArray[i]["source"] == linkArray[j]["source"]
+                && linkArray[i]["target"] == linkArray[j]["target"]) {
                 toOne += "," + linkArray[j]["attached"];
                 // 一度調べたものは"forgot"にして次は調べない
                 linkArray[j]["attached"] = "forgot";
@@ -376,22 +379,32 @@ function gatherManyLinks(linkArray){
     return result;
 }
 
-/**
-convertGatherLink()
-    合成処理結果のオートマトンのlinksをまとめる
-*/
-function convertGatherLink(graphData){
-    var newData = new Object;
-    newData["links"] = gatherManyLinks(graphData["links"]);
+// /**
+// convertGatherLink()
+//     合成処理結果のオートマトンのlinksをまとめる
+// */
+// function convertGatherLink(graphData){
+//     var newData = new Object;
+//     for(graphData["links"] in link){
 
-    newData["states"] = graphData["states"];
-    newData["startState"] = graphData["startState"];
-    newData["finishState"] = graphData["finishState"];
-    newData["symbols"] = graphData["symbols"];
-    newData["isDFA"] = graphData["isDFA"];
+//     }
 
-    return newData;
-}
+
+
+
+
+
+
+//     // newData["links"] = gatherManyLinks(graphData["links"]);
+
+//     newData["states"] = graphData["states"];
+//     newData["startState"] = graphData["startState"];
+//     newData["finishState"] = graphData["finishState"];
+//     newData["symbols"] = graphData["symbols"];
+//     newData["isDFA"] = graphData["isDFA"];
+
+//     return newData;
+// }
 
 //*----------------------------------------------------------------
 //* 遷移図svg作成
