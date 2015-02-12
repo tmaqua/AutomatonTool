@@ -379,32 +379,20 @@ function gatherManyLinks(linkArray){
     return result;
 }
 
-// /**
-// convertGatherLink()
-//     合成処理結果のオートマトンのlinksをまとめる
-// */
-// function convertGatherLink(graphData){
-//     var newData = new Object;
-//     for(graphData["links"] in link){
+/**
+convertGatherLink()
+    合成処理結果のオートマトンのlinksをまとめる
+*/
+function convertGatherLink(graphData){
+    newData["links"] = gatherManyLinks(graphData["links"]);
+    newData["states"] = graphData["states"];
+    newData["startState"] = graphData["startState"];
+    newData["finishState"] = graphData["finishState"];
+    newData["symbols"] = graphData["symbols"];
+    newData["isDFA"] = graphData["isDFA"];
 
-//     }
-
-
-
-
-
-
-
-//     // newData["links"] = gatherManyLinks(graphData["links"]);
-
-//     newData["states"] = graphData["states"];
-//     newData["startState"] = graphData["startState"];
-//     newData["finishState"] = graphData["finishState"];
-//     newData["symbols"] = graphData["symbols"];
-//     newData["isDFA"] = graphData["isDFA"];
-
-//     return newData;
-// }
+    return newData;
+}
 
 //*----------------------------------------------------------------
 //* 遷移図svg作成
