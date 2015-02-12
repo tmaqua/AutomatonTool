@@ -384,6 +384,8 @@ convertGatherLink()
     合成処理結果のオートマトンのlinksをまとめる
 */
 function convertGatherLink(graphData){
+    var newData = new Object;
+
     newData["links"] = gatherManyLinks(graphData["links"]);
     newData["states"] = graphData["states"];
     newData["startState"] = graphData["startState"];

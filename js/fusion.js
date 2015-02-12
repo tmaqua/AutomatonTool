@@ -232,7 +232,7 @@ function fusionRequest(){
 
 								// 遷移図作成用データ
 								var graphData = new Object;
-								graphData["srcData1"] = file1Data;
+								graphData["srcData1"] = convertGatherLink(file1Data);
 								graphData["srcData2"] = null;
 								
 								if (response["responseData"]["dfa"] == null) {
@@ -342,8 +342,8 @@ function fusionRequest(){
 
 									// 遷移図作成用データ
 									var graphData = new Object;
-									graphData["srcData1"] = file1Data;
-									graphData["srcData2"] = file2Data;
+									graphData["srcData1"] = convertGatherLink(file1Data);
+									graphData["srcData2"] = convertGatherLink(file2Data);
 
 									if (response["responseData"]["dfa"] == null) {
 										graphData["DFA"] = null;
