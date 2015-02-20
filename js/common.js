@@ -258,9 +258,10 @@ function checkLoadData(jsonData){
         return false;
     }
 
-    if(finishStateNum == 0){    // 終了状態が0こ
-        return false;
-    }
+    // 終了状態なくてもいいらしい
+    // if(finishStateNum == 0){    // 終了状態が0こ
+    //     return false;
+    // }
 
     for (var i = 0; i < linksNum; i++) {
         // 遷移関数で示されている状態が状態一覧にあるか

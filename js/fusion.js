@@ -593,7 +593,12 @@ function createGraph(graphData){
 
 	// 表示スペースの見出しを変更
 	$("#graphSpace_NFA_header").text("出力結果:"+ radioStr +"(NFA)");
-	$("#graphSpace_DFA_header").text("出力結果:"+ radioStr +"(DFA)");
+	if (radio == 0) {
+		$("#graphSpace_DFA_header").text("出力結果:"+ radioStr);
+	} else{
+		$("#graphSpace_DFA_header").text("出力結果:"+ radioStr +"(DFA)");
+	}
+	
 	$("#graphSpace_Min_header").text("出力結果:"+ radioStr +"(最小化)");
 
 	if (showSrc) {// 入力データを表示

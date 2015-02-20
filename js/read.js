@@ -701,8 +701,10 @@ function validateForGrid () {
 	}
 
 	if(finishState.length == 0){
-		resultArray.unshift("終了状態未入力\n");
-		flag = false;
+		// 終了状態はなくてもいいらしい
+		resultArray.unshift(-1);
+		// resultArray.unshift("終了状態未入力\n");
+		// flag = false;
 	}else{
 		resultArray.unshift(-1);
 	}
