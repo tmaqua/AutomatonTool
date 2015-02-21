@@ -39,6 +39,13 @@ $(function(){
 		downloadData = tempData["Min"];
 	});
 
+	// 最小化オプションがチェックされた時連接処理だったらDFAにするオプションもチェックつける
+	$("#checkbox_toMin").click(function(){
+		if (getFusionRadio() == 7) {
+			$("#checkbox_toDFA").prop("checked", true);
+		};
+	});
+
 	// モーダルでファイル名入力中にエンターキーが押されたら保存する
 	$("#inputFileName").keypress(function(e){
 		var pressKey = e.which ? e.which : e.keyCode;
